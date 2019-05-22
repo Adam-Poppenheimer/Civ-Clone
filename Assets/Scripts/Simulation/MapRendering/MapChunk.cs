@@ -187,7 +187,6 @@ namespace Assets.Simulation.MapRendering {
         private IOrientationBaker        OrientationBaker;
         private IPointOrientationLogic   PointOrientationLogic;
         private IFullMapRefresher        FullMapRefresher;
-        private IHeightmapRefresher      HeightmapRefresher;
 
         #endregion
 
@@ -201,8 +200,7 @@ namespace Assets.Simulation.MapRendering {
             DiContainer container, IHexMeshFactory hexMeshFactory, IRoadTriangulator roadTriangulator,
             IMarshTriangulator marshTriangulator, IOasisTriangulator oasisTriangulator,
             ITerrainBaker terrainBaker, IOrientationBaker orientationBaker,
-            IPointOrientationLogic pointOrientationLogic, IFullMapRefresher fullMapRefresher,
-            IHeightmapRefresher heightmapRefresher
+            IPointOrientationLogic pointOrientationLogic, IFullMapRefresher fullMapRefresher
         ) {
             AlphamapLogic           = alphamapLogic;
             HeightLogic             = heightLogic;
@@ -219,7 +217,6 @@ namespace Assets.Simulation.MapRendering {
             OrientationBaker        = orientationBaker;
             PointOrientationLogic   = pointOrientationLogic;
             FullMapRefresher        = fullMapRefresher;
-            HeightmapRefresher      = heightmapRefresher;
         }
 
         #region from IMapChunk
@@ -417,15 +414,12 @@ namespace Assets.Simulation.MapRendering {
 
             bool flushTerrain = false;
 
-            ChunkOrientationData orientationData = new ChunkOrientationData();
-
             if((RefreshFlags & TerrainRefreshType.RequiresOrientation) != 0) {
+                ChunkOrientationData orientationData = OrientationBaker.MakeOrientationRequestForChunk(this);
 
-                OrientationBaker.RenderOrientationFromChunk(this);
-
-                orientationData.OrientationTexture = OrientationBaker.OrientationTexture;
-                orientationData.WeightsTexture     = OrientationBaker.WeightsTexture;
-                orientationData.DuckTexture        = OrientationBaker.DuckTexture;
+                while(!orientationData.IsReady) {
+                    yield return SkipFrame;
+                }
 
                 if(((RefreshFlags & TerrainRefreshType.Alphamap) == TerrainRefreshType.Alphamap)) {
                     RefreshAlphamap(orientationData);
@@ -433,9 +427,11 @@ namespace Assets.Simulation.MapRendering {
                 }
 
                 if(((RefreshFlags & TerrainRefreshType.Heightmap) == TerrainRefreshType.Heightmap)) {
-                    RefreshHeightmap(orientationData);
+                    yield return StartCoroutine(RefreshHeightmap(orientationData));
                     flushTerrain = true;
                 }
+
+                OrientationBaker.ReleaseOrientationData(orientationData);
             }
 
             if(((RefreshFlags & TerrainRefreshType.Water) == TerrainRefreshType.Water)) {
@@ -543,9 +539,7 @@ namespace Assets.Simulation.MapRendering {
             Profiler.EndSample();
         }
 
-        private void RefreshHeightmap(ChunkOrientationData chunkOrientation) {
-            Profiler.BeginSample("RefreshHeightmap()");
-
+        private IEnumerator RefreshHeightmap(ChunkOrientationData chunkOrientation) {
             var terrainData = Terrain.terrainData;
 
             var unsafeOrientationTexture = new AsyncTextureUnsafe<Color32>(chunkOrientation.OrientationTexture);
@@ -617,11 +611,11 @@ namespace Assets.Simulation.MapRendering {
                 columnTasks[cachedHeight] = columnTask;
             }
 
-            Task.WaitAll(columnTasks);
+            while(columnTasks.Any(task => !task.IsCompleted)) {
+                yield return SkipFrame;
+            }
 
             terrainData.SetHeights(0, 0, heights);
-
-            Profiler.EndSample();
         }
 
         private void RefreshWater() {

@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Assets.Simulation.MapRendering {
 
     [Serializable]
-    public class OrientationBakingDataData {
+    public class OrientationBakingData {
 
         #region instance fields and properties
 

@@ -116,6 +116,10 @@ namespace Assets.UI.Units {
         }
 
         public void RepositionIcons() {
+            if(Camera.main == null) {
+                return;
+            }
+
             foreach(var cellWithSlot in SlotOfCell.Keys) {
                 Vector3 centerOfNWCorner = cellWithSlot.AbsolutePosition + (
                     HexMapRenderConfig.GetFirstCorner(HexDirection.NW) + HexMapRenderConfig.GetSecondCorner(HexDirection.NW)

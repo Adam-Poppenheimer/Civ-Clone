@@ -87,7 +87,6 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IFullMapRefresher>              ().To<FullMapRefresher>              ().AsSingle();
             Container.Bind<IContourTriangulator>           ().To<ContourTriangulator>           ().AsSingle();
             Container.Bind<IBakedElementsLogic>            ().To<BakedElementsLogic>            ().AsSingle();
-            Container.Bind<IHeightmapRefresher>            ().To<HeightmapRefresher>            ().AsSingle();
         }
 
         #endregion

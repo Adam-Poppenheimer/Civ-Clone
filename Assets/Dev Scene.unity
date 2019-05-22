@@ -6726,6 +6726,96 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 140408886}
   m_CullTransparentMesh: 0
+--- !u!1 &140455362
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 140455363}
+  - component: {fileID: 140455365}
+  - component: {fileID: 140455364}
+  m_Layer: 0
+  m_Name: Sub-Baker Prefab
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &140455363
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140455362}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 40, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 453832945}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!20 &140455364
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140455362}
+  m_Enabled: 0
+  serializedVersion: 2
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 50
+  field of view: 60
+  orthographic: 1
+  orthographic size: 5
+  m_Depth: 24
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 0
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 0
+  m_AllowMSAA: 0
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!114 &140455365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140455362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 556305d0d5f51fe44bc9a68740810894, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  texture: {fileID: 0}
+  Camera: {fileID: 140455364}
+  RenderTexture: {fileID: 0}
 --- !u!1 &143739725
 GameObject:
   m_ObjectHideFlags: 0
@@ -19665,7 +19755,6 @@ GameObject:
   m_Component:
   - component: {fileID: 453832945}
   - component: {fileID: 453832946}
-  - component: {fileID: 453832944}
   m_Layer: 0
   m_Name: Orientation Baker
   m_TagString: Untagged
@@ -19673,49 +19762,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!20 &453832944
-Camera:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 453832943}
-  m_Enabled: 0
-  serializedVersion: 2
-  m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
-  m_projectionMatrixMode: 1
-  m_GateFitMode: 2
-  m_FOVAxisMode: 0
-  m_SensorSize: {x: 36, y: 24}
-  m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
-  m_NormalizedViewPortRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  near clip plane: 0.3
-  far clip plane: 50
-  field of view: 60
-  orthographic: 1
-  orthographic size: 5
-  m_Depth: 24
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 0
-  m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
-  m_TargetEye: 3
-  m_HDR: 0
-  m_AllowMSAA: 0
-  m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
-  m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
 --- !u!4 &453832945
 Transform:
   m_ObjectHideFlags: 0
@@ -19723,13 +19769,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 453832943}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 40, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 140455363}
   m_Father: {fileID: 0}
   m_RootOrder: 15
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &453832946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19742,10 +19789,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3bf2a5895617ac47ab4211be9d309b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  orientationTexture: {fileID: 0}
-  weightsTexture: {fileID: 0}
-  duckTexture: {fileID: 0}
-  OrientationCamera: {fileID: 453832944}
   OrientationCullingMask:
     serializedVersion: 2
     m_Bits: 32768
@@ -19758,6 +19801,7 @@ MonoBehaviour:
   RiverDuckCullingMask:
     serializedVersion: 2
     m_Bits: 262144
+  SubBakerPrefab: {fileID: 140455365}
 --- !u!1 &454875401
 GameObject:
   m_ObjectHideFlags: 0
@@ -43228,8 +43272,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MapTileHoverDelay: 1
   MapTileHoverYieldDisplay: {fileID: 385197837}
-  PathIndicatorPrefab: {fileID: 1196564049541204, guid: 32d31385bce1dd346b1e9d9ccd150edd,
-    type: 3}
   HexCellOverlayPrefab: {fileID: 114674894453571472, guid: 250c439a4c0a4de40b594772aae4e713,
     type: 3}
 --- !u!4 &963436562
@@ -63473,8 +63515,8 @@ MonoBehaviour:
   TechRecordPrefab: {fileID: 1113850249}
   PrerequisiteLines: {fileID: 555952418}
   TechTable: {fileID: 555952417}
-  TechTableRowCount: 10
   TechTableCellPrefab: {fileID: 1254802837}
+  TechTableRowCount: 10
 --- !u!1 &1466030643
 GameObject:
   m_ObjectHideFlags: 0
@@ -63909,7 +63951,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 221.5, y: -29.279594}
+  m_AnchoredPosition: {x: 221.5, y: -29.279541}
   m_SizeDelta: {x: 423, y: 38.55919}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1481994290
@@ -71720,7 +71762,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EndTurnButton: {fileID: 1125782296}
-  EndTurnKeyName: Submit
 --- !u!1 &1637282667
 GameObject:
   m_ObjectHideFlags: 0
@@ -93159,7 +93200,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NameField: {fileID: 861374713}
-  IconField: {fileID: 1898850731}
   SlotDisplayContainer: {fileID: 1049552571}
   SlotDisplayPrefab: {fileID: 52916076}
   DestroyButton: {fileID: 1927188599}

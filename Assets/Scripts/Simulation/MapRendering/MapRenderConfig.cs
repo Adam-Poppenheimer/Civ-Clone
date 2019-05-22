@@ -421,15 +421,15 @@ namespace Assets.Simulation.MapRendering {
 
 
 
-        public OrientationBakingDataData OrientationTextureData {
+        public OrientationBakingData OrientationTextureData {
             get { return _orientationTextureData; }
         }
-        [SerializeField] private OrientationBakingDataData _orientationTextureData = null;
+        [SerializeField] private OrientationBakingData _orientationTextureData = null;
 
-        public int MaxOrientationTextures {
-            get { return _maxOrientationTextures; }
+        public int MaxParallelTerrainRefreshes {
+            get { return _maxParallelTerrainRefreshes; }
         }
-        [SerializeField] private int _maxOrientationTextures = 0;
+        [SerializeField] private int _maxParallelTerrainRefreshes = 0;
 
         public Shader RiverWeightShader {
             get { return _riverWeightShader; }

@@ -17,59 +17,43 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        #region from IOrientationBaker
-
-        public Texture2D OrientationTexture {
-            get { return orientationTexture; }
-        }
-        [SerializeField] private Texture2D orientationTexture;
-
-        public Texture2D WeightsTexture {
-            get { return weightsTexture; }
-        }
-        [SerializeField] private Texture2D weightsTexture;
-
-        public Texture2D DuckTexture {
-            get { return duckTexture; }
-        }
-        [SerializeField] private Texture2D duckTexture;
-
-        #endregion
-
-        [SerializeField] private Camera OrientationCamera = null;
-
         [SerializeField] private LayerMask OrientationCullingMask   = 0;
         [SerializeField] private LayerMask NormalWeightsCullingMask = 0;
         [SerializeField] private LayerMask RiverWeightsCullingMask  = 0;
         [SerializeField] private LayerMask RiverDuckCullingMask     = 0;
 
+        [SerializeField] private OrientationSubBaker SubBakerPrefab = null;
+
         private IHexMesh OrientationMesh {
             get {
-                if(_orientationMesh == null) {
-                    _orientationMesh = HexMeshFactory.Create("Orientation Mesh", RenderConfig.OrientationMeshData);
+                if(orientationMesh == null) {
+                    orientationMesh = HexMeshFactory.Create("Orientation Mesh", RenderConfig.OrientationMeshData);
 
-                    _orientationMesh.transform.SetParent(transform, false);
+                    orientationMesh.transform.SetParent(transform, false);
                 }
 
-                return _orientationMesh;
+                return orientationMesh;
             }
         }
-        private IHexMesh _orientationMesh;
+        private IHexMesh orientationMesh;
 
         private IHexMesh WeightsMesh {
             get {
-                if(_weightsMesh == null) {
-                    _weightsMesh = HexMeshFactory.Create("Weights Mesh", RenderConfig.WeightsMeshData);
+                if(weightsMesh == null) {
+                    weightsMesh = HexMeshFactory.Create("Weights Mesh", RenderConfig.WeightsMeshData);
 
-                    _weightsMesh.transform.SetParent(transform, false);
+                    weightsMesh.transform.SetParent(transform, false);
                 }
 
-                return _weightsMesh;
+                return weightsMesh;
             }
         }
-        private IHexMesh _weightsMesh;
+        private IHexMesh weightsMesh;
 
-        private RenderTexture RenderTexture;
+        private Queue<Tuple<OrientationSubBaker, OrientationSubBaker, OrientationSubBaker>> FreeBakerTriplets =
+            new Queue<Tuple<OrientationSubBaker, OrientationSubBaker, OrientationSubBaker>>();
+
+        private HashSet<ChunkOrientationData> UnrenderedOrientationData = new HashSet<ChunkOrientationData>();
         
 
 
@@ -86,109 +70,94 @@ namespace Assets.Simulation.MapRendering {
         [Inject]
         public void InjectDependencies(
             IMapRenderConfig renderConfig, IHexMeshFactory hexMeshFactory,
-            IOrientationTriangulator orientationTriangulator, IWeightsTriangulator weightsTriangulator
+            IOrientationTriangulator orientationTriangulator, IWeightsTriangulator weightsTriangulator,
+            DiContainer container
         ) {
             RenderConfig            = renderConfig;
             HexMeshFactory          = hexMeshFactory;
             OrientationTriangulator = orientationTriangulator;
             WeightsTriangulator     = weightsTriangulator;
 
-            Initialize();
+            for(int i = 0; i < RenderConfig.MaxParallelTerrainRefreshes; i++) {
+                FreeBakerTriplets.Enqueue(new Tuple<OrientationSubBaker, OrientationSubBaker, OrientationSubBaker>(
+                    container.InstantiatePrefabForComponent<OrientationSubBaker>(SubBakerPrefab, transform),
+                    container.InstantiatePrefabForComponent<OrientationSubBaker>(SubBakerPrefab, transform),
+                    container.InstantiatePrefabForComponent<OrientationSubBaker>(SubBakerPrefab, transform)
+                ));
+            }
         }
 
         #region Unity messages
 
         private void OnDestroy() {
-            if(RenderTexture != null) {
-                RenderTexture.Release();
-                RenderTexture = null;
+            foreach(var orientationData in UnrenderedOrientationData) {
+                ReleaseOrientationData(orientationData);
             }
 
-            Destroy(OrientationTexture);
-            Destroy(WeightsTexture);
-            Destroy(DuckTexture);
+            if(orientationMesh != null) {
+                orientationMesh.Clear();
+                HexMeshFactory.Destroy(orientationMesh);
+            }
+
+            if(weightsMesh != null) {
+                weightsMesh.Clear();
+                HexMeshFactory.Destroy(weightsMesh);
+            }
+        }
+
+        private void Update() {
+            if(UnrenderedOrientationData.Count > 0) {
+                TryRenderOrientationData();
+            }            
         }
 
         #endregion
-
-        private void Initialize() {
-            if(RenderTexture != null) {
-                RenderTexture.Release();
-            }
-
-            var textureData = RenderConfig.OrientationTextureData;
-
-            RenderTexture = new RenderTexture(
-                width:  textureData.Resolution,
-                height: textureData.Resolution,
-                depth:  textureData.Depth,
-                format: textureData.RenderTextureFormat,
-                readWrite: RenderTextureReadWrite.Default
-            );
-
-            RenderTexture.filterMode = FilterMode.Point;
-            RenderTexture.wrapMode   = TextureWrapMode.Clamp;
-            RenderTexture.useMipMap  = false;
-
-            float cameraWidth  = RenderConfig.ChunkWidth;
-            float cameraHeight = RenderConfig.ChunkHeight;
-
-            OrientationCamera.orthographic     = true;
-            OrientationCamera.orthographicSize = cameraHeight / 2f;
-            OrientationCamera.aspect           = cameraWidth / cameraHeight;
-            OrientationCamera.targetTexture    = RenderTexture;
-
-            OrientationCamera.enabled = false;
-
-            orientationTexture = BuildTexture();
-            weightsTexture     = BuildTexture();
-            duckTexture        = BuildTexture();
-
-            Vector3 localPos = OrientationCamera.transform.localPosition;
-
-            localPos.x = RenderConfig.ChunkWidth  / 2f;
-            localPos.z = RenderConfig.ChunkHeight / 2f;
-
-            OrientationCamera.transform.localPosition = localPos;
-        }
 
         #region from IOrientationBaker
 
-        public void RenderOrientationFromChunk(IMapChunk chunk) {
-            Profiler.BeginSample("RenderOrientationFromChunk()");
+        public ChunkOrientationData MakeOrientationRequestForChunk(IMapChunk chunk) {
+            var newData = new ChunkOrientationData(chunk);
 
-            OrientationCamera.transform.SetParent(chunk.transform, false);
+            UnrenderedOrientationData.Add(newData);
 
-            var activeRenderTexture = RenderTexture.active;
+            return newData;
+        }
 
-            RenderOrientation(chunk, OrientationTexture);
-            RenderWeights    (chunk, WeightsTexture);
-            RenderRiverDuck  (chunk, DuckTexture);
+        public void ReleaseOrientationData(ChunkOrientationData data) {
+            FreeBakerTriplets.Enqueue(data.BakerTriplet);
 
-            RenderTexture.active = activeRenderTexture;
-
-            OrientationCamera.transform.SetParent(null, false);
-
-            Profiler.EndSample();
+            data.BakerTriplet = null;
         }
 
         #endregion
 
-        private Texture2D BuildTexture() {
-            var retval = new Texture2D(
-                RenderConfig.OrientationTextureData.Resolution,
-                RenderConfig.OrientationTextureData.Resolution,
-                TextureFormat.ARGB32, false
-            );
+        private void TryRenderOrientationData() {
+            int dataCount = Math.Min(RenderConfig.MaxParallelTerrainRefreshes, FreeBakerTriplets.Count);
 
-            retval.filterMode = FilterMode.Point;
-            retval.wrapMode   = TextureWrapMode.Clamp;
-            retval.anisoLevel = 0;
+            var dataToProcess = UnrenderedOrientationData.Take(dataCount).ToArray();
 
-            return retval;
+            for(int i = 0; i < dataToProcess.Length; i++) {
+                var activeData = dataToProcess[i];
+
+                activeData.BakerTriplet = FreeBakerTriplets.Dequeue();
+
+                RenderOrientation(activeData.Chunk, activeData.BakerTriplet.Item1);
+                RenderWeights    (activeData.Chunk, activeData.BakerTriplet.Item2);
+                RenderDuck       (activeData.Chunk, activeData.BakerTriplet.Item3);
+            }
+
+            for(int i = 0; i < dataToProcess.Length; i++) {
+                var activeData = dataToProcess[i];
+
+                activeData.BakerTriplet.Item1.ReadPixels();
+                activeData.BakerTriplet.Item2.ReadPixels();
+                activeData.BakerTriplet.Item3.ReadPixels();
+
+                UnrenderedOrientationData.Remove(activeData);
+            }
         }
 
-        private void RenderOrientation(IMapChunk chunk, Texture2D orientationTexture) {
+        private void RenderOrientation(IMapChunk chunk, OrientationSubBaker subBaker) {
             OrientationMesh.Clear();
 
             OrientationMesh.transform.SetParent(chunk.transform, false);
@@ -203,19 +172,10 @@ namespace Assets.Simulation.MapRendering {
 
             OrientationMesh.Apply();
 
-            OrientationCamera.clearFlags  = CameraClearFlags.SolidColor;
-            OrientationCamera.cullingMask = OrientationCullingMask;
-
-            OrientationCamera.Render();
-
-            RenderTexture.active = RenderTexture;
-
-            orientationTexture.ReadPixels(new Rect(0, 0, RenderTexture.width, RenderTexture.height), 0, 0);
-
-            orientationTexture.Apply();
+            subBaker.PerformBakePass(chunk, CameraClearFlags.SolidColor, OrientationCullingMask);
         }
 
-        private void RenderWeights(IMapChunk chunk, Texture2D weightsTexture) {
+        private void RenderWeights(IMapChunk chunk, OrientationSubBaker subBaker) {
             WeightsMesh.Clear();
 
             WeightsMesh.transform.SetParent(chunk.transform, false);
@@ -230,34 +190,12 @@ namespace Assets.Simulation.MapRendering {
 
             WeightsMesh.Apply();
 
-            OrientationCamera.clearFlags  = CameraClearFlags.SolidColor;
-            OrientationCamera.cullingMask = NormalWeightsCullingMask;
-
-            OrientationCamera.Render();
-
-            OrientationCamera.clearFlags  = CameraClearFlags.Nothing;
-            OrientationCamera.cullingMask = RiverWeightsCullingMask;
-
-            OrientationCamera.RenderWithShader(RenderConfig.RiverWeightShader, "RenderType");
-
-            RenderTexture.active = RenderTexture;
-
-            weightsTexture.ReadPixels(new Rect(0, 0, RenderTexture.width, RenderTexture.height), 0, 0);
-
-            weightsTexture.Apply();
+            subBaker.PerformBakePass(chunk, CameraClearFlags.SolidColor, NormalWeightsCullingMask);
+            subBaker.PerformBakePass(chunk, CameraClearFlags.Nothing,    RiverWeightsCullingMask, RenderConfig.RiverWeightShader, "RenderType");
         }
 
-        private void RenderRiverDuck(IMapChunk chunk, Texture2D duckTexture) {
-            OrientationCamera.clearFlags  = CameraClearFlags.SolidColor;
-            OrientationCamera.cullingMask = RiverDuckCullingMask;
-
-            OrientationCamera.Render();
-
-            RenderTexture.active = RenderTexture;
-
-            duckTexture.ReadPixels(new Rect(0, 0, RenderTexture.width, RenderTexture.height), 0, 0);
-
-            duckTexture.Apply();
+        private void RenderDuck(IMapChunk chunk, OrientationSubBaker subBaker) {
+            subBaker.PerformBakePass(chunk, CameraClearFlags.SolidColor, RiverDuckCullingMask);
         }
 
         #endregion

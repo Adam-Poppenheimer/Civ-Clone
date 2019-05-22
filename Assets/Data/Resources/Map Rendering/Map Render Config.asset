@@ -23,7 +23,7 @@ MonoBehaviour:
   _noiseHashGridScale: 0.25
   _cellPerturbStrengthXZ: 2
   _flatlandsElevationNoiseStrength: 0.05
-  _hillsElevationNoiseStrength: 0.25
+  _hillsElevationNoiseStrength: 0.2
   _outerRadius: 10
   _solidFactor: 0.8
   _chunkWidth: 40
@@ -106,7 +106,6 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 1
-    _weldMesh: 0
     _convertVerticesToWorld: 0
     _layer: 4
     _renderingData:
@@ -120,7 +119,6 @@ MonoBehaviour:
     _useUV3Coordinates: 1
     _useCellData: 0
     _useColors: 1
-    _weldMesh: 0
     _convertVerticesToWorld: 0
     _layer: 19
     _renderingData:
@@ -134,7 +132,6 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 0
-    _weldMesh: 0
     _convertVerticesToWorld: 0
     _layer: 17
     _renderingData:
@@ -148,7 +145,6 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 0
-    _weldMesh: 0
     _convertVerticesToWorld: 0
     _layer: 18
     _renderingData:
@@ -162,7 +158,6 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 1
-    _weldMesh: 0
     _convertVerticesToWorld: 1
     _layer: 10
     _renderingData:
@@ -176,7 +171,6 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 1
-    _weldMesh: 0
     _convertVerticesToWorld: 0
     _layer: 11
     _renderingData:
@@ -190,7 +184,6 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 0
-    _weldMesh: 0
     _convertVerticesToWorld: 1
     _layer: 12
     _renderingData:
@@ -204,7 +197,6 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 0
-    _weldMesh: 0
     _convertVerticesToWorld: 1
     _layer: 13
     _renderingData:
@@ -218,7 +210,6 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 0
-    _weldMesh: 0
     _convertVerticesToWorld: 1
     _layer: 13
     _renderingData:
@@ -232,7 +223,6 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 0
-    _weldMesh: 0
     _convertVerticesToWorld: 1
     _layer: 14
     _renderingData:
@@ -246,7 +236,6 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 1
-    _weldMesh: 0
     _convertVerticesToWorld: 1
     _layer: 15
     _renderingData:
@@ -260,7 +249,6 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 1
-    _weldMesh: 0
     _convertVerticesToWorld: 1
     _layer: 16
     _renderingData:
@@ -289,5 +277,5 @@ MonoBehaviour:
     _depth: 8
     _renderTextureFormat: 0
     _textureFormat: 5
-  _maxOrientationTextures: 30
+  _maxParallelTerrainRefreshes: 100
   _riverWeightShader: {fileID: 4800000, guid: 548ae0abc870086438b22b154e25d8f1, type: 3}

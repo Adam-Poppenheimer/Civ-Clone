@@ -134,9 +134,9 @@ namespace Assets.Simulation.MapRendering {
         float OasisLandWidth        { get; }
 
         
-        OrientationBakingDataData OrientationTextureData { get; }
+        OrientationBakingData OrientationTextureData { get; }
 
-        int MaxOrientationTextures { get; }
+        int MaxParallelTerrainRefreshes { get; }
 
         Shader RiverWeightShader { get; }
 

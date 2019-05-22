@@ -58,6 +58,16 @@ namespace Assets.Simulation.MapRendering {
                 RenderTexture_HighRes.Release();
                 RenderTexture_HighRes = null;
             }
+
+            if(RenderTexture_MediumRes != null) {
+                RenderTexture_MediumRes.Release();
+                RenderTexture_MediumRes = null;
+            }
+
+            if(RenderTexture_LowRes != null) {
+                RenderTexture_LowRes.Release();
+                RenderTexture_LowRes = null;
+            }
         }
 
         #endregion

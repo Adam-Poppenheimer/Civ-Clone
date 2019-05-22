@@ -102,6 +102,14 @@ namespace Assets.Simulation.HexMap {
             HexMeshFactory        = hexMeshFactory;
         }
 
+        #region Unity messages
+
+        private void OnDestroy() {
+            Clear();
+        }
+
+        #endregion
+
         #region from IHexGrid        
 
         public void Build(int cellCountX, int cellCountZ) {
@@ -151,11 +159,15 @@ namespace Assets.Simulation.HexMap {
             chunks     = null;
             castChunks = null;
 
-            HexMeshFactory.Destroy(RiverSurfaceMesh);
-            HexMeshFactory.Destroy(FarmMesh);
+            if(RiverSurfaceMesh != null) { HexMeshFactory.Destroy(RiverSurfaceMesh); }
+            if(RiverBankMesh    != null) { HexMeshFactory.Destroy(RiverBankMesh);    }
+            if(RiverDuckMesh    != null) { HexMeshFactory.Destroy(RiverDuckMesh);    }
+            if(FarmMesh         != null) { HexMeshFactory.Destroy(FarmMesh);         }
 
             RiverSurfaceMesh = null;
-            FarmMesh  = null;
+            RiverBankMesh    = null;
+            RiverDuckMesh    = null;
+            FarmMesh         = null;
         }
 
         public bool HasCellAtCoordinates(HexCoordinates coordinates) {
