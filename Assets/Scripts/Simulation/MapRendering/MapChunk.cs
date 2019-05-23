@@ -420,7 +420,7 @@ namespace Assets.Simulation.MapRendering {
                 }
 
                 if(((RefreshFlags & TerrainRefreshType.Alphamap) == TerrainRefreshType.Alphamap)) {
-                    RefreshAlphamap(orientationData);
+                    yield return StartCoroutine(RefreshAlphamap(orientationData));
                     flushTerrain = true;
                 }
 
@@ -440,6 +440,8 @@ namespace Assets.Simulation.MapRendering {
                 Terrain.Flush();
                 yield return SkipFrame;
             }
+
+            Profiler.BeginSample("Mono-threaded refresh");
 
             if(((RefreshFlags & TerrainRefreshType.Culture) == TerrainRefreshType.Culture)) {
                 RefreshCulture();
@@ -465,76 +467,94 @@ namespace Assets.Simulation.MapRendering {
                 RefreshVisibility();
             }
 
+            Profiler.EndSample();
+
             RefreshFlags = TerrainRefreshType.None;
 
             RefreshCoroutine = null;
         }
 
-        private void RefreshAlphamap(ChunkOrientationData orientationData) {
-            Profiler.BeginSample("RefreshAlphamap()");
-
+        private IEnumerator RefreshAlphamap(ChunkOrientationData orientationData) {
             var terrainData = Terrain.terrainData;
 
-            var orientationTexture = orientationData.OrientationTexture;
-            var weightsTexture     = orientationData.WeightsTexture;
-            var duckTexture        = orientationData.DuckTexture;
+            var unsafeOrientationTexture = new AsyncTextureUnsafe<Color32>(orientationData.OrientationTexture);
+            var unsafeWeightsTexture     = new AsyncTextureUnsafe<Color32>(orientationData.WeightsTexture);
+            var unsafeDuckTexture        = new AsyncTextureUnsafe<Color32>(orientationData.DuckTexture);
+
+            Vector3 terrainSize = terrainData.size;
 
             int mapWidth  = terrainData.alphamapWidth;
             int mapHeight = terrainData.alphamapHeight;
+
+            int alphamapLength = RenderConfig.MapTextures.Count();
 
             float[,,] alphaMaps = terrainData.GetAlphamaps(0, 0, mapWidth, mapHeight);
 
             float maxTextureNormalX = Width  / RenderConfig.ChunkWidth;
             float maxTextureNormalZ = Height / RenderConfig.ChunkHeight;
 
-            float terrainNormalX, terrainNormalZ, textureNormalX, textureNormalZ;
+            float indexToNormalX = 1f / (mapHeight - 1f);
+            float indexToNormalZ = 1f / (mapWidth  - 1f);
 
-            PointOrientationData orientation = new PointOrientationData();
+            Vector3 chunkPosition = transform.position;
 
-            var indexBytes = new byte[2];
-
-            float[] returnMap       = new float[RenderConfig.MapTextures.Count()];
-            float[] intermediateMap = new float[RenderConfig.MapTextures.Count()];
-
-            int alphamapLength = terrainData.terrainLayers.Length;
-
-            int texelX, texelY;
-            Color32 orientationColor;
-            Color weightsColor, duckColor;
+            var columnTasks = new Task[mapHeight];
 
             for(int height = 0; height < mapHeight; height++) {
-                for(int width = 0; width < mapWidth; width++) {
-                    //For some reason, terrainData seems to index its points
-                    //as (y, x) rather than the more traditional (x, y), so
-                    //we need to sample our texture accordingly
-                    terrainNormalX = height * 1.0f / (mapHeight - 1);
-                    terrainNormalZ = width  * 1.0f / (mapWidth  - 1);
+                int cachedHeight = height;
 
-                    textureNormalX = Mathf.Lerp(0f, maxTextureNormalX, terrainNormalX);
-                    textureNormalZ = Mathf.Lerp(0f, maxTextureNormalZ, terrainNormalZ);
+                var indexBytes = new byte[2];
 
-                    texelX = Mathf.RoundToInt(orientationTexture.width  * textureNormalX);
-                    texelY = Mathf.RoundToInt(orientationTexture.height * textureNormalZ);
+                PointOrientationData pointOrientation = new PointOrientationData();
 
-                    orientationColor = orientationTexture.GetPixel(texelX, texelY);
-                    weightsColor     = weightsTexture    .GetPixel(texelX, texelY);
-                    duckColor        = duckTexture       .GetPixel(texelX, texelY);
+                float[] returnMap       = new float[RenderConfig.MapTextures.Count()];
+                float[] intermediateMap = new float[RenderConfig.MapTextures.Count()];
 
-                    PointOrientationLogic.GetOrientationDataFromColors(
-                        orientation, indexBytes, orientationColor, weightsColor, duckColor
-                    );
+                var columnTask = new Task(() => {
+                    for(int width = 0; width < mapWidth; width++) {
+                        float terrainNormalX, terrainNormalZ, textureNormalX, textureNormalZ, worldX, worldZ;
 
-                    AlphamapLogic.GetAlphamapFromOrientation(returnMap, intermediateMap, orientation);
+                        Color32 orientationColor;
+                        Color weightsColor, duckColor;
 
-                    for(int alphaIndex = 0; alphaIndex < alphamapLength; alphaIndex++) {
-                        alphaMaps[width, height, alphaIndex] = returnMap[alphaIndex];
+                        //For some reason, terrainData seems to index its points
+                        //as (y, x) rather than the more traditional (x, y), so
+                        //we need to sample our texture accordingly
+                        terrainNormalX = cachedHeight * indexToNormalX;
+                        terrainNormalZ = width  * indexToNormalZ;
+
+                        worldX = chunkPosition.x + terrainNormalX * terrainSize.x;
+                        worldZ = chunkPosition.z + terrainNormalZ * terrainSize.z;
+
+                        textureNormalX = maxTextureNormalX * terrainNormalX;
+                        textureNormalZ = maxTextureNormalZ * terrainNormalZ;
+
+                        orientationColor = ColorCorrection.ARBG_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeOrientationTexture));
+                        weightsColor     = ColorCorrection.ARBG_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeWeightsTexture));
+                        duckColor        = ColorCorrection.ARBG_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeDuckTexture));
+
+                        PointOrientationLogic.GetOrientationDataFromColors(
+                            pointOrientation, indexBytes, orientationColor, weightsColor, duckColor
+                        );
+
+                        AlphamapLogic.GetAlphamapFromOrientation(returnMap, intermediateMap, pointOrientation);
+
+                        for(int alphaIndex = 0; alphaIndex < alphamapLength; alphaIndex++) {
+                            alphaMaps[width, cachedHeight, alphaIndex] = returnMap[alphaIndex];
+                        }
                     }
-                }
+                });
+
+                columnTask.Start();
+
+                columnTasks[cachedHeight] = columnTask;
+            }
+
+            while(columnTasks.Any(task => !task.IsCompleted)) {
+                yield return SkipFrame;
             }
 
             terrainData.SetAlphamaps(0, 0, alphaMaps);
-
-            Profiler.EndSample();
         }
 
         private IEnumerator RefreshHeightmap(ChunkOrientationData chunkOrientation) {
