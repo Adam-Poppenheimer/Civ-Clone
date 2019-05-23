@@ -83,8 +83,6 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private Texture2D _waterBakeTexture;
 
-
-
         #endregion
 
         private TerrainCollider TerrainCollider;

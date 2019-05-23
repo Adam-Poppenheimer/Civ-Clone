@@ -58251,7 +58251,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OcclusionMask:
     serializedVersion: 2
-    m_Bits: 272
+    m_Bits: 1048592
   LandDrawingMask:
     serializedVersion: 2
     m_Bits: 31744

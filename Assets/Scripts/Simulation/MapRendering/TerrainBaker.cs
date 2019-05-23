@@ -30,8 +30,6 @@ namespace Assets.Simulation.MapRendering {
         private Dictionary<IMapChunk, Tuple<TerrainSubBaker, TerrainSubBaker>> PairsOfUnreadChunks =
             new Dictionary<IMapChunk, Tuple<TerrainSubBaker, TerrainSubBaker>>();
 
-        private Color32[] ClearBuffer;
-
 
 
 
@@ -61,12 +59,6 @@ namespace Assets.Simulation.MapRendering {
 
             int highResWidth  = Mathf.RoundToInt(TerrainBakeConfig.BakeTextureDimensionsHighRes.x);
             int highResHeight = Mathf.RoundToInt(TerrainBakeConfig.BakeTextureDimensionsHighRes.y);
-
-            ClearBuffer = new Color32[highResWidth * highResHeight];
-
-            for(int i = 0; i < ClearBuffer.Length; i++) {
-                ClearBuffer[i] = Color.clear;
-            }
         }
 
         #region Unity messages
@@ -131,6 +123,10 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private void BakeLand(IMapChunk chunk, Texture2D landTexture, TerrainSubBaker subBaker) {
+            var landLayer  = chunk.Terrain.gameObject.layer;
+
+            chunk.Terrain.gameObject.layer = LayerMask.NameToLayer("Terrain Bake Temp");
+
             subBaker.PerformBakePass(
                 chunk, landTexture, CameraClearFlags.SolidColor, OcclusionMask,
                 TerrainBakeConfig.TerrainBakeOcclusionShader, "RenderType"
@@ -139,6 +135,8 @@ namespace Assets.Simulation.MapRendering {
             subBaker.PerformBakePass(
                 chunk, landTexture, CameraClearFlags.Nothing, LandDrawingMask
             );
+
+            chunk.Terrain.gameObject.layer = landLayer;
         }
 
         private void BakeWater(IMapChunk chunk, Texture2D waterTexture, TerrainSubBaker subBaker) {

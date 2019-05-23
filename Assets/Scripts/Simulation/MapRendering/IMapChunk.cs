@@ -23,10 +23,10 @@ namespace Assets.Simulation.MapRendering {
         float Width  { get; }
         float Height { get; }
 
+        bool IsRefreshing { get; }
+
         Texture2D LandBakeTexture  { get; set; }
         Texture2D WaterBakeTexture { get; set; }
-
-        bool IsRefreshing { get; }
 
         #endregion
 
