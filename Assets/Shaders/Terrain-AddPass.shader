@@ -22,7 +22,7 @@ Shader "Hidden/TerrainEngine/Splatmap/Terrain-AddPass" {
 		[HideInInspector] _Smoothness3 ("Smoothness 3", Range(0.0, 1.0)) = 1.0
 
 		//Used for baking things like culture directly onto the terrain
-		[HideInInspector] _BakeTexture("Bake Texture (RGBA)", 2D) = "white" {}
+		[HideInInspector] _BakeTexture("Bake Texture (RGBA)", 2D) = "clear" {}
 
 		//Elements of the vector are (WorldX, WorldZ, ChunkWidth, ChunkHeight)
 		[HideInInspector] _BakeTextureDimensions("Bake Texture Dimensions", Vector) = (0, 0, 1.0, 1.0)

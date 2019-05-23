@@ -148,7 +148,7 @@ namespace Assets.Simulation.MapRendering {
                 IsReady = true;
             });
 
-            //transform.SetParent(OriginalParent, false);
+            transform.SetParent(OriginalParent, false);
         }
 
         #endregion

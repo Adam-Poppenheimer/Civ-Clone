@@ -277,5 +277,5 @@ MonoBehaviour:
     _depth: 8
     _renderTextureFormat: 0
     _textureFormat: 5
-  _maxParallelTerrainRefreshes: 100
+  _maxParallelTerrainRefreshes: 30
   _riverWeightShader: {fileID: 4800000, guid: 548ae0abc870086438b22b154e25d8f1, type: 3}
