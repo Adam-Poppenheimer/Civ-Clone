@@ -11,11 +11,28 @@ using Zenject;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapRendering;
 
+using Assets.Util;
+
 namespace Assets.UI {
 
     public class GameCamera : MonoBehaviour, IGameCamera {
 
         #region instance fields and properties
+
+        #region from IGameCamera
+
+        public Camera ManagedCamera {
+            get { return _managedCamera; }
+        }
+        [SerializeField] private Camera _managedCamera = null;
+
+        public bool SuppressZoom     { get; set; }
+        public bool SuppressRotation { get; set; }
+        public bool SuppressMovement { get; set; }
+
+        public float Zoom { get; private set; }
+
+        #endregion
 
         [SerializeField] private float StickMinZoom = 0f;
         [SerializeField] private float StickMaxZoom = 0f;
@@ -30,18 +47,12 @@ namespace Assets.UI {
 
         private Transform Swivel, Stick;
 
-        public float Zoom { get; private set; }
-
-        public bool SuppressZoom      { get; set; }
-        public bool SuppressRotation  { get; set; }
-        public bool SuppressMovemnent { get; set; }
-
         private float RotationAngle;
 
 
 
 
-        private IHexGrid            Grid;
+        private IHexGrid         Grid;
         private IMapRenderConfig RenderConfig;
 
         #endregion
@@ -75,7 +86,7 @@ namespace Assets.UI {
 
             float xDelta = Input.GetAxis("Horizontal");
             float zDelta = Input.GetAxis("Vertical");
-            if(!SuppressMovemnent && xDelta != 0f || zDelta != 0f) {
+            if(!SuppressMovement && xDelta != 0f || zDelta != 0f) {
                 AdjustPosition(xDelta, zDelta);
             }
         }

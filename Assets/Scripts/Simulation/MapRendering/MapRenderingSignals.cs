@@ -14,7 +14,11 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        public ISubject<Unit> FarmlandsTriangulated { get; private set; }
+        public ISubject<Unit>      FarmlandsTriangulated   { get; private set; }
+
+        public ISubject<IMapChunk> ChunkStartingToRefresh     { get; private set; }
+        public ISubject<IMapChunk> ChunkFinishedRefreshing { get; private set; }
+        public ISubject<IMapChunk> ChunkBeingDestroyed     { get; private set; }
 
         #endregion
 
@@ -22,6 +26,10 @@ namespace Assets.Simulation.MapRendering {
 
         public MapRenderingSignals() {
             FarmlandsTriangulated = new Subject<Unit>();
+
+            ChunkStartingToRefresh     = new Subject<IMapChunk>();
+            ChunkFinishedRefreshing = new Subject<IMapChunk>();
+            ChunkBeingDestroyed     = new Subject<IMapChunk>();
         }
 
         #endregion

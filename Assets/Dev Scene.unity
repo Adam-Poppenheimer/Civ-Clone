@@ -51,8 +51,8 @@ LightmapSettings:
     m_IndirectOutputScale: 1
     m_AlbedoBoost: 1
     m_EnvironmentLightingMode: 0
-    m_EnableBakedLightmaps: 1
-    m_EnableRealtimeLightmaps: 1
+    m_EnableBakedLightmaps: 0
+    m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
     serializedVersion: 12
     m_Resolution: 2
@@ -23621,6 +23621,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 529919041}
   m_CullTransparentMesh: 0
+--- !u!1 &533315147
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 533315149}
+  - component: {fileID: 533315148}
+  m_Layer: 0
+  m_Name: Test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!64 &533315148
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533315147}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 0}
+--- !u!4 &533315149
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533315147}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 18
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &536176393
 GameObject:
   m_ObjectHideFlags: 0
@@ -37404,7 +37449,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 175, y: -31.371658}
+  m_AnchoredPosition: {x: 175, y: -31.371704}
   m_SizeDelta: {x: 320, y: 32.743317}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &844425646
@@ -41582,7 +41627,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -41621,7 +41666,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 939718.56, y: 2.4845893e+27, z: 7.1819367e+22, w: 7.1390077e+31}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -64276,7 +64321,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1488381196}
   - component: {fileID: 1488381195}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Game Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64295,6 +64340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 645270488c2c06341af61cbab8f08785, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _managedCamera: {fileID: 1693301566}
   StickMinZoom: -250
   StickMaxZoom: -45
   SwivelMinZoom: 90
@@ -65728,7 +65774,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1515811181}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Stick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74575,7 +74621,7 @@ GameObject:
   - component: {fileID: 1693301564}
   - component: {fileID: 1693301563}
   - component: {fileID: 1693301567}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -74644,14 +74690,14 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 300
   field of view: 80
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294444031
+    m_Bits: 1573687
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -78987,7 +79033,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1782205361}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Swivel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

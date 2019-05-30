@@ -14,6 +14,7 @@ namespace Assets.Simulation.MapRendering {
         public ShadowCastingMode ShadowCastingMode;
         public bool              ReceiveShadows;
         public Material          Material;
+        public bool              SuppressRendering;
 
     }
 

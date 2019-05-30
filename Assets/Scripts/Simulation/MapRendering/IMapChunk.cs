@@ -28,6 +28,8 @@ namespace Assets.Simulation.MapRendering {
         Texture2D LandBakeTexture  { get; set; }
         Texture2D WaterBakeTexture { get; set; }
 
+        bool IsRendering { get; set; }
+
         #endregion
 
         #region methods
@@ -41,6 +43,10 @@ namespace Assets.Simulation.MapRendering {
         bool DoesCellOverlapChunk(IHexCell cell);
 
         bool IsInTerrainBounds2D(Vector2 positionXZ);
+
+        bool DoesXZFrustumOverlap(
+            Vector2 bottomLeftFrustum, Vector2 topLeftFrustum, Vector2 topRightFrustum, Vector2 bottomRightFrustum
+        );
 
         Vector3 GetNearestPointOnTerrain(Vector3 fromLocation);
 

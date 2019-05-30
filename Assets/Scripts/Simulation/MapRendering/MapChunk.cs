@@ -83,7 +83,23 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private Texture2D _waterBakeTexture;
 
+        public bool IsRendering {
+            get { return _isRendering; }
+            set {
+                if(_isRendering != value) {
+                    _isRendering = value;
+
+                    Terrain                .gameObject.SetActive(_isRendering);
+                    FeatureContainer       .gameObject.SetActive(_isRendering);
+                    StandingWater.transform.gameObject.SetActive(_isRendering);
+                }
+            }
+        }
+        private bool _isRendering;
+
         #endregion
+
+        [SerializeField] private BoxCollider CullingCollider = null;
 
         private TerrainCollider TerrainCollider;
 
@@ -183,8 +199,11 @@ namespace Assets.Simulation.MapRendering {
         private IOasisTriangulator       OasisTriangulator;
         private ITerrainBaker            TerrainBaker;
         private IOrientationBaker        OrientationBaker;
+        private IGeometry2D              Geometry2D;
         private IPointOrientationLogic   PointOrientationLogic;
         private IFullMapRefresher        FullMapRefresher;
+        private Transform                FeatureContainer;
+        private MapRenderingSignals      MapRenderingSignals;
 
         #endregion
 
@@ -197,25 +216,39 @@ namespace Assets.Simulation.MapRendering {
             IHexFeatureManager hexFeatureManager, ICultureTriangulator cultureTriangulator, IHexCellShaderData shaderData,
             DiContainer container, IHexMeshFactory hexMeshFactory, IRoadTriangulator roadTriangulator,
             IMarshTriangulator marshTriangulator, IOasisTriangulator oasisTriangulator,
-            ITerrainBaker terrainBaker, IOrientationBaker orientationBaker,
-            IPointOrientationLogic pointOrientationLogic, IFullMapRefresher fullMapRefresher
+            ITerrainBaker terrainBaker, IOrientationBaker orientationBaker, IGeometry2D geometry2D,
+            IPointOrientationLogic pointOrientationLogic, IFullMapRefresher fullMapRefresher,
+            [Inject(Id = "Feature Container")] Transform featureContainer, MapRenderingSignals mapRenderingSignals
         ) {
-            AlphamapLogic           = alphamapLogic;
-            HeightLogic             = heightLogic;
-            RenderConfig            = renderConfig;
-            WaterTriangulator       = waterTriangulator;
-            HexFeatureManager       = hexFeatureManager;
-            CultureTriangulator     = cultureTriangulator;
-            ShaderData              = shaderData;
-            HexMeshFactory          = hexMeshFactory;
-            RoadTriangulator        = roadTriangulator;
-            MarshTriangulator       = marshTriangulator;
-            OasisTriangulator       = oasisTriangulator;
-            TerrainBaker            = terrainBaker;
-            OrientationBaker        = orientationBaker;
-            PointOrientationLogic   = pointOrientationLogic;
-            FullMapRefresher        = fullMapRefresher;
+            AlphamapLogic         = alphamapLogic;
+            HeightLogic           = heightLogic;
+            RenderConfig          = renderConfig;
+            WaterTriangulator     = waterTriangulator;
+            HexFeatureManager     = hexFeatureManager;
+            CultureTriangulator   = cultureTriangulator;
+            ShaderData            = shaderData;
+            HexMeshFactory        = hexMeshFactory;
+            RoadTriangulator      = roadTriangulator;
+            MarshTriangulator     = marshTriangulator;
+            OasisTriangulator     = oasisTriangulator;
+            TerrainBaker          = terrainBaker;
+            OrientationBaker      = orientationBaker;
+            Geometry2D            = geometry2D;
+            PointOrientationLogic = pointOrientationLogic;
+            FullMapRefresher      = fullMapRefresher;
+            FeatureContainer      = featureContainer;
+            MapRenderingSignals   = mapRenderingSignals;
         }
+
+        #region Unity messages
+
+        private void OnDestroy() {
+            Clear();
+
+            MapRenderingSignals.ChunkBeingDestroyed.OnNext(this);
+        }
+
+        #endregion
 
         #region from IMapChunk
 
@@ -232,6 +265,9 @@ namespace Assets.Simulation.MapRendering {
         public void Initialize(Vector3 position, float width, float height) {
             Width  = width;
             Height = height;
+
+            CullingCollider.size   = new Vector3(Width,      1f, Height);
+            CullingCollider.center = new Vector3(Width / 2f, 0f, Height / 2f);
 
             var terrainData = BuildTerrainData(width, height);
 
@@ -267,14 +303,16 @@ namespace Assets.Simulation.MapRendering {
 
             InstancedWaterMaterial.EnableKeyword("USE_BAKE_TEXTURE");
 
-            Terrain.shadowCastingMode    = RenderConfig.TerrainShadowCastingMode;
-            Terrain.basemapDistance      = RenderConfig.TerrainBasemapDistance;
-            Terrain.materialType         = Terrain.MaterialType.Custom;
-            Terrain.materialTemplate     = InstancedTerrainMaterial;
-            Terrain.heightmapPixelError  = RenderConfig.TerrainHeightmapPixelError;
-            Terrain.drawTreesAndFoliage  = false;
-            Terrain.editorRenderFlags    = TerrainRenderFlags.Heightmap;
-            Terrain.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
+            Terrain.shadowCastingMode            = RenderConfig.TerrainShadowCastingMode;
+            Terrain.basemapDistance              = RenderConfig.TerrainBasemapDistance;
+            Terrain.materialType                 = Terrain.MaterialType.Custom;
+            Terrain.materialTemplate             = InstancedTerrainMaterial;
+            Terrain.heightmapPixelError          = RenderConfig.TerrainHeightmapPixelError;
+            Terrain.drawTreesAndFoliage          = false;
+            Terrain.editorRenderFlags            = TerrainRenderFlags.Heightmap;
+            Terrain.reflectionProbeUsage         = UnityEngine.Rendering.ReflectionProbeUsage.Off;
+            Terrain.bakeLightProbesForTrees      = false;
+            Terrain.freeUnusedRenderingResources = true;
 
             StandingWater.OverrideMaterial(InstancedWaterMaterial);
 
@@ -282,8 +320,6 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public void Refresh(TerrainRefreshType refreshTypes) {
-            Profiler.BeginSample("MapChunk.Refresh()");
-
             if(RefreshCoroutine == null) {
                 RefreshCoroutine = StartCoroutine(Refresh_Perform());
             }
@@ -297,8 +333,6 @@ namespace Assets.Simulation.MapRendering {
             }
 
             RefreshFlags |= refreshTypes;
-
-            Profiler.EndSample();
         }
 
         public bool DoesCellOverlapChunk(IHexCell cell) {
@@ -313,6 +347,39 @@ namespace Assets.Simulation.MapRendering {
 
             return positionXZ.x >= xMin && positionXZ.x <= xMax
                 && positionXZ.y >= zMin && positionXZ.y <= zMax;
+        }
+
+        public bool DoesXZFrustumOverlap(
+            Vector2 bottomLeftFrustum, Vector2 topLeftFrustum, Vector2 topRightFrustum, Vector2 bottomRightFrustum
+        ) {
+            Vector2 topMiddleFrustum = (topLeftFrustum + topRightFrustum) / 2f;
+
+            Vector2 bottomLeftChunk  = transform.position.ToXZ();
+            Vector2 topLeftChunk     = transform.position.ToXZ() + new Vector2(0f,                         Terrain.terrainData.size.z);
+            Vector2 topRightChunk    = transform.position.ToXZ() + new Vector2(Terrain.terrainData.size.x, Terrain.terrainData.size.z);
+            Vector2 bottomRightChunk = transform.position.ToXZ() + new Vector2(Terrain.terrainData.size.x, 0f);
+
+            //The projected frustum is divided into three triangles, each of which are tested
+
+            return (
+                //Are the points in the rightmost triangle?
+                Geometry2D.IsPointWithinTriangle(bottomLeftChunk,  bottomLeftFrustum, topLeftFrustum, topMiddleFrustum) || 
+                Geometry2D.IsPointWithinTriangle(topLeftChunk,     bottomLeftFrustum, topLeftFrustum, topMiddleFrustum) || 
+                Geometry2D.IsPointWithinTriangle(topRightChunk,    bottomLeftFrustum, topLeftFrustum, topMiddleFrustum) || 
+                Geometry2D.IsPointWithinTriangle(bottomRightChunk, bottomLeftFrustum, topLeftFrustum, topMiddleFrustum)
+            ) || (
+                //Are the points in the leftmost triangle?
+                Geometry2D.IsPointWithinTriangle(bottomLeftChunk,  bottomRightFrustum, topMiddleFrustum, topRightFrustum) || 
+                Geometry2D.IsPointWithinTriangle(topLeftChunk,     bottomRightFrustum, topMiddleFrustum, topRightFrustum) || 
+                Geometry2D.IsPointWithinTriangle(topRightChunk,    bottomRightFrustum, topMiddleFrustum, topRightFrustum) || 
+                Geometry2D.IsPointWithinTriangle(bottomRightChunk, bottomRightFrustum, topMiddleFrustum, topRightFrustum)
+            ) || (
+                //Are the points in the middle triangle?
+                Geometry2D.IsPointWithinTriangle(bottomLeftChunk,  bottomLeftFrustum, topMiddleFrustum, bottomRightFrustum) || 
+                Geometry2D.IsPointWithinTriangle(topLeftChunk,     bottomLeftFrustum, topMiddleFrustum, bottomRightFrustum) || 
+                Geometry2D.IsPointWithinTriangle(topRightChunk,    bottomLeftFrustum, topMiddleFrustum, bottomRightFrustum) || 
+                Geometry2D.IsPointWithinTriangle(bottomRightChunk, bottomLeftFrustum, topMiddleFrustum, bottomRightFrustum)
+            );
         }
 
         public Vector3 GetNearestPointOnTerrain(Vector3 fromLocation) {
@@ -393,15 +460,9 @@ namespace Assets.Simulation.MapRendering {
 
         #endregion
 
-        #region Unity messages
-
-        private void OnDestroy() {
-            Clear();
-        }
-
-        #endregion
-
         private IEnumerator Refresh_Perform() {
+            MapRenderingSignals.ChunkStartingToRefresh.OnNext(this);
+
             yield return SkipFrame;
 
             while(FullMapRefresher.IsRefreshingRivers) {
@@ -441,8 +502,6 @@ namespace Assets.Simulation.MapRendering {
                 yield return SkipFrame;
             }
 
-            Profiler.BeginSample("Mono-threaded refresh");
-
             if(((RefreshFlags & TerrainRefreshType.Culture) == TerrainRefreshType.Culture)) {
                 RefreshCulture();
             }
@@ -467,11 +526,11 @@ namespace Assets.Simulation.MapRendering {
                 RefreshVisibility();
             }
 
-            Profiler.EndSample();
-
             RefreshFlags = TerrainRefreshType.None;
 
             RefreshCoroutine = null;
+
+            MapRenderingSignals.ChunkFinishedRefreshing.OnNext(this);
         }
 
         private IEnumerator RefreshAlphamap(ChunkOrientationData orientationData) {
@@ -722,7 +781,7 @@ namespace Assets.Simulation.MapRendering {
             newData.alphamapResolution  = RenderConfig.TerrainAlphamapResolution;
             newData.heightmapResolution = RenderConfig.TerrainHeightmapResolution;
             newData.baseMapResolution   = RenderConfig.TerrainBasemapResolution;
-            newData.SetDetailResolution(0, 8);
+            newData.SetDetailResolution(8, 8);
 
             newData.size = new Vector3(width, RenderConfig.TerrainMaxY, height);
 

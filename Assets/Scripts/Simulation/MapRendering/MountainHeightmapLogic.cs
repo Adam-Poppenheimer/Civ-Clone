@@ -47,8 +47,6 @@ namespace Assets.Simulation.MapRendering {
             Vector2 xzPoint, IHexCell cell, float elevationDuck,
             AsyncTextureUnsafe<Color32> flatlandsNoise, AsyncTextureUnsafe<Color32> hillsNoise
         ) {
-            Profiler.BeginSample("MountainHeightmapLogic.GetHeightForPoint()");
-
             float edgeWeight = Mathf.Clamp01((xzPoint - cell.AbsolutePositionXZ).magnitude / RenderConfig.InnerRadius);
             float peakWeight = 1f - edgeWeight;
 
@@ -59,8 +57,6 @@ namespace Assets.Simulation.MapRendering {
             float flatlandHeight = FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, flatlandsNoise);
 
             var retval = Mathf.Lerp(mountainHeight, flatlandHeight, elevationDuck);
-
-            Profiler.EndSample();
 
             return retval;
         }

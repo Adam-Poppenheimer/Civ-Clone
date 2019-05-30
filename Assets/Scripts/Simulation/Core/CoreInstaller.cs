@@ -55,8 +55,7 @@ namespace Assets.Simulation.Core {
             Container.Bind<IRandomizer>().To<Randomizer>().AsSingle();
             Container.Bind<IGameCore>  ().To<GameCore>  ().AsSingle().NonLazy();
             
-
-            
+            Container.BindInterfacesAndSelfTo<ChunkCullingBrain>().AsSingle().NonLazy();
         }
 
         #endregion

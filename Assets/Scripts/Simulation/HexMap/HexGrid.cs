@@ -113,8 +113,6 @@ namespace Assets.Simulation.HexMap {
         #region from IHexGrid        
 
         public void Build(int cellCountX, int cellCountZ) {
-            Profiler.BeginSample("HexGrid.Build()");
-
             Clear();
 
             CellCountX = cellCountX;
@@ -139,8 +137,6 @@ namespace Assets.Simulation.HexMap {
             foreach(var chunk in Chunks) {
                 chunk.Refresh(TerrainRefreshType.All);
             }
-
-            Profiler.EndSample();
         }
 
         public void Clear() {
@@ -333,15 +329,11 @@ namespace Assets.Simulation.HexMap {
         #endregion
 
         private void CreateCells() {
-            Profiler.BeginSample("CreateCells()");
-
             for(int z = 0, i = 0; z < CellCountZ; ++ z) {
                 for(int x = 0; x < CellCountX; ++x) {
                     CreateCell(x, z, i++);
                 }
             }
-
-            Profiler.EndSample();
         }
 
         private void CreateCell(int x, int z, int i) {
@@ -366,8 +358,6 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void CreateChunks() {
-            Profiler.BeginSample("CreateChunks()");
-
             float mapWidth  = CellCountX * RenderConfig.InnerRadius * 2    + RenderConfig.InnerRadius;
             float mapHeight = CellCountZ * RenderConfig.OuterRadius * 1.5f + RenderConfig.OuterRadius / 2f;
 
@@ -411,8 +401,6 @@ namespace Assets.Simulation.HexMap {
                     );
                 }
             }
-
-            Profiler.EndSample();
         }
 
         private MapChunk CreateChunk(float chunkX, float chunkZ, float width, float height) {
@@ -428,8 +416,6 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void AttachChunksToCells() {
-            Profiler.BeginSample("AttachChunksToCells()");
-
             foreach(var cell in Cells) {
                 int chunkIndexX = Mathf.FloorToInt(cell.AbsolutePosition.x / RenderConfig.ChunkWidth);
                 int chunkIndexZ = Mathf.FloorToInt(cell.AbsolutePosition.z / RenderConfig.ChunkHeight);
@@ -455,8 +441,6 @@ namespace Assets.Simulation.HexMap {
                     chunk.AttachCell(cell, chunk.IsInTerrainBounds2D(cell.AbsolutePositionXZ));
                 }
             }
-
-            Profiler.EndSample();
         }
 
         private HexCoordinates GetCoordinatesFromPosition(Vector3 position) {

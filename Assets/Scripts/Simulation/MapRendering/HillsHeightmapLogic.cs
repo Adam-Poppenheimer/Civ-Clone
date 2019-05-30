@@ -46,8 +46,6 @@ namespace Assets.Simulation.MapRendering {
             Vector2 xzPoint, float elevationDuck, AsyncTextureUnsafe<Color32> flatlandsNoiseTexture,
             AsyncTextureUnsafe<Color32> hillsNoiseTexture
         ) {
-            Profiler.BeginSample("HillHeightmapLogic.GetHeightForPoint()");
-
             float hillNoise = NoiseGenerator.SampleNoise(
                 xzPoint, hillsNoiseTexture, RenderConfig.HillsElevationNoiseStrength, NoiseType.ZeroToOne
             ).x;
@@ -57,8 +55,6 @@ namespace Assets.Simulation.MapRendering {
             float flatlandsHeight = FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, flatlandsNoiseTexture);
 
             var retval = Mathf.Lerp(hillsHeight, flatlandsHeight, elevationDuck);
-
-            Profiler.EndSample();
 
             return retval;
         }

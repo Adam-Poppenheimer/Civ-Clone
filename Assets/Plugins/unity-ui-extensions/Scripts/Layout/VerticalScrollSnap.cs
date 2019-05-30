@@ -35,7 +35,7 @@ namespace UnityEngine.UI.Extensions
             }
             else if (_lerp)
             {
-                _screensContainer.localPosition = Vector3.Lerp(_screensContainer.localPosition, _lerp_target, transitionSpeed * Time.deltaTime);
+                _screensContainer.localPosition = Vector3.Lerp(_screensContainer.localPosition, _lerp_target, transitionSpeed * (UseTimeScale ? Time.deltaTime : Time.unscaledDeltaTime));
                 if (Vector3.Distance(_screensContainer.localPosition, _lerp_target) < 0.1f)
                 {
                     _screensContainer.localPosition = _lerp_target;
@@ -121,7 +121,7 @@ namespace UnityEngine.UI.Extensions
         /// *Note, this is an index address (0-x)
         /// </summary>
         /// <param name="index">Index element of child to remove</param>
-        /// <param name="ChildRemoved">>Resulting removed GO</param>
+        /// <param name="ChildRemoved">Resulting removed GO</param>
         public void RemoveChild(int index, out GameObject ChildRemoved)
         {
             RemoveChild(index, false, out ChildRemoved);
@@ -157,7 +157,6 @@ namespace UnityEngine.UI.Extensions
 
             SetScrollContainerPosition();
         }
-
 
         /// <summary>
         /// Remove all children from this ScrollSnap
@@ -240,17 +239,53 @@ namespace UnityEngine.UI.Extensions
             if (_scroll_rect.vertical)
             {
                 var distance = Vector3.Distance(_startPosition, _screensContainer.localPosition);
-                if (UseFastSwipe && distance < panelDimensions.height + FastSwipeThreshold && distance >=1f)
-                {
+                if(UseHardSwipe){
                     _scroll_rect.velocity = Vector3.zero;
-                    if (_startPosition.y - _screensContainer.localPosition.y > 0)
+
+                    if (distance > FastSwipeThreshold)
                     {
-                        NextScreen();
+                        if (_startPosition.y - _screensContainer.localPosition.y > 0)
+                        {
+                            NextScreen();
+                        }
+                        else
+                        {
+                            PreviousScreen();
+                        }
                     }
                     else
                     {
-                        PreviousScreen();
+                        ScrollToClosestElement();
                     }
+                }
+                else
+                {
+                    if (UseFastSwipe && distance < panelDimensions.height + FastSwipeThreshold && distance >=1f)
+                    {
+                        _scroll_rect.velocity = Vector3.zero;
+                        if (_startPosition.y - _screensContainer.localPosition.y > 0)
+                        {
+                            if (_startPosition.y - _screensContainer.localPosition.y > _childSize / 3)
+                            {
+                                ScrollToClosestElement();
+                            }
+                            else
+                            {
+                                NextScreen();
+                            }
+                        }
+                        else
+                        {
+                            if (_startPosition.y - _screensContainer.localPosition.y > -_childSize / 3)
+                            {
+                                ScrollToClosestElement();
+                            }
+                            else
+                            {
+                                PreviousScreen();
+                            }
+                        }
+                    } 
                 }
             }
         }

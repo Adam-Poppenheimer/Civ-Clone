@@ -52,7 +52,6 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField, Layer] private int _layer = 0;
 
-
         public HexRenderingData RenderingData {
             get { return _renderingData; }
         }

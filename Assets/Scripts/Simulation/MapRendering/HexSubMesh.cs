@@ -66,6 +66,8 @@ namespace Assets.Simulation.MapRendering {
             MeshRenderer.sharedMaterial    = rendererData.Material;
             MeshRenderer.shadowCastingMode = rendererData.ShadowCastingMode;
             MeshRenderer.receiveShadows    = rendererData.ReceiveShadows;
+
+            MeshRenderer.enabled = !rendererData.SuppressRendering;
         }
 
         public void Clear() {

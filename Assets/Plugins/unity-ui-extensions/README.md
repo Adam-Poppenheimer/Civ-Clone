@@ -1,7 +1,10 @@
 # README
 
 This is an extension project for the new Unity UI system which can be found at: [Unity UI Source](https://bitbucket.org/Unity-Technologies/ui)
+> ## [Check out the control demos on our Tumblr page](https://unityuiextensions.tumblr.com/)
 
+> ### We've disabled Anonymous issue for creation for now, as it's making it extreemely hard to provide feedback and help to users.  Please ensure you logon with your Bitbucket account when raising issues.  
+> If you don't want to do that, then reach out to us on Gitter
 
 # [Intro](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/GettingStarted)
 For more info, here's a little introduction video for the project:
@@ -23,17 +26,17 @@ In this repository is a collection of extension scripts / effects and controls t
 
 You can either download / fork this project to access the scripts, or you can also download these pre-compiled Unity Assets, chock full of goodness for each release:
 
-# [Download](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/Downloads)
+# [Download](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/Downloads) - 2019.1 (aka 2.1)
 
-For the 2.0 release, we have expanded where you can download the UnityPackage asset and widened the options to contribute to the project.
+We have expanded where you can download the UnityPackage asset and widened the options to contribute to the project.
 
 > I will still stress however, ***contribution is optional***. **The asset / code will always remain FREE**
 
-[![Download from Itch.IO](https://bytebucket.org/UnityUIExtensions/unity-ui-extensions/wiki/SiteImages/itchio.png)](https://unityuiextensions.itch.io/uiextensions2-0 "Download from Itch.IO")
-[![Download from Itch.IO](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/SiteImages/unionassets.png)](https://unionassets.com/admin/AssetList "Download from Union Assets")
-[![Download from Itch.IO](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/SiteImages/patreon.jpg)](https://www.patreon.com/UnityUIExtensions "Support Unity UI Extensions on Patreon & download")
+| [![Download from Itch.IO](https://bytebucket.org/UnityUIExtensions/unity-ui-extensions/wiki/SiteImages/itchio.png)](https://unityuiextensions.itch.io/uiextensions2-0 "Download from Itch.IO") | [![Download from Itch.IO](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/SiteImages/unionassets.png)](https://unionassets.com/unity-ui-extensions "Download from Union Assets") | [![Download from Itch.IO](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/SiteImages/patreon.jpg)](https://www.patreon.com/UnityUIExtensions "Support Unity UI Extensions on Patreon & download")| 
+| :--- | :--- | :--- |
+| [Grab from Itchio](https://unityuiextensions.itch.io/uiextensions2-0) | [Obtain via Union Assets](https://unionassets.com/unity-ui-extensions) |[Support through Patreon](https://www.patreon.com/UnityUIExtensions) | 
 
-> Still available on the [BitBucket site](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/downloads/UnityUIExtensions.unitypackage) if you prefer
+> Still available on the [BitBucket site](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/downloads/UnityUIExtensions-2019-1.unitypackage) if you prefer
 
 To view previous releases, visit the [release archive](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/Downloads)
 
@@ -59,72 +62,56 @@ To get started with the project, here's a little guide:
 
 # [Updates:](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/ReleaseNotes/RELEASENOTES)
 
-## Update 2.0 - The update so big they had to name it twice
-[![View 2.0 update Video](http://img.youtube.com/vi/Ivzt9_jhGfQ/0.jpg)](https://www.youtube.com/watch?v=Ivzt9_jhGfQ "Update 2.0 for the Unity UI Extensions Project")
+## Update 2019.1 - formally 2.1  - Going with the times
+
+Given that it's been a while since the last release and a fair few number of fixes have been introduced since the last update, it's only fair I get this point release out for the masses.
+This is only a point release and we are still working hard on the next full update
 
 > Be sure to logon to the new Gitter Chat site for the UI Extensions project, if you have any questions, queries or suggestions
+> 
 > Much easier that posting a question / issue on YouTube, Twitter or Facebook :D
+> 
 > ## [UIExtensions Gitter Chanel](https://gitter.im/Unity-UI-Extensions/Lobby)
 
 ### New / updated features
-* Major updates to the Line renderer for texture and positioning support, inc Editor support
-* Line Renderer also includes "dotted" line support and the ability to increase the vertex count
-* Reorderable list now also works in Screenspace-Camera & Worldspace
-* H&V Scroll Snap controls now support scrollbars
-* Minor updates to the Gradient 2 control
-* Minor updates to all dropdown controls to manage control startup
-* Update UI Particle Renderer with new updates, including Texture Sheet animation support
-* New Selectable Scalar
-* New MonoSpacing text effect
-* New Multi-Touch Scrollrect support
-* New UI Grid Renderer (handy if you want a UI grid background)
-* New CoolDownButton control (adds a timer between button clicks)
-* New Curly UI - for those who like their UI Bendy
-* New Fancy Scroll View - A programmatic  scroll view
-* New UI Line connector control - extends line renderer to draw lines between UI Objects
-* New Radial Slider control - for those who like their sliders to curve
-* New Stepper control - a +/- control similar to that found on iOS
-* New Segmented Control - A button array control similar to that found on iOS
-* New UIHighlightable control - just in case the user wasn't sure where they were
+
+* Updated and tested with Unity 2018 / 2019
+* FancyScrollView updated with newer version (note breaking change)
+* Added test version of a LineRender control using a List instead of an array
+* New CardUI layout control, for a snazzy flip card system
+* New UI Circle Progress indicator control
 
 ### Examples / Examples / Examples
-Finally added some proper examples, especially for the newer controls.
-These can be found in the Examples folder (which can be safely deleted if you wish)
+(All examples can be deleted without affecting the extensions)
 
-* ColorPicker - shows the Color Picker UI in both SS and WS
-* ComboBox - shows all the different combo box controls
-* Cooldown - several example implementations of the cooldown button control using Unity image effects and SAUIM
-* CurlyUI - shows off the CurlyUI control
-* FancyScrollView - the only REAL way to understand this programmatic control (direct from the contributor)
-* HSS-VSS-ScrollSnap - several working examples of the HSS/VSS scroll snaps (not ScrollSnap or FancyScrollView), including a full screen variant
-* MenuExample - A demo menu implementation showing off the new MenuManager control
-* Radial Slider - Just keep on sliding
-* ReorderableList - Several examples of the re-orderable list in action, complete with managed drag / drop features
-* ScrollConflictManager - Making ScrollRects get along
-* SelectionBox - The RTS selector in action, showing examples of selecting 2D and 3D objects
-* Serialisation - Unit test case examples for the serialisation components
-* TextEffects - All the Text effects and shaders in one easy to view place
-* UIlineRenderer - Several demos / examples for using the Line Renderer and UI Line connector controls
-* UIVerticalScrollerDemo - A full screen example of a UIVertical Scroller implementation.
+* Added example for CardUI
+* Added example for the LineRendererList experiment
+* FancyScrollView examples updated to the new version
+* Example for new UICircle progress control
 
 ### Fixes
-* H&V Scroll Snap Next/Previous Button interactable handler (only enables when there is a child to move to)
-* H&V Scroll Snap Swipe logic updated and now includes scaling support
-* Editor options for non-drawing graphic control
-* Events in ComboBox, Dropdown and autocomplete controls updated to use UI events
-* UIFlippable "Argument out of Range" bigfix (pesky component orders with effects)
-* All primitive controls will now redraw when enabled in code
-* Autocomplete has two lookup text methods now, Array and Linq
-* Line renderer pivot fix (now respects the pivot point)
-* TextPic rendering and event updates
-* Minor tweaks to the UIParticle system to remove "upgrade" errors. Still needs a rework tbh
-* Clean up of all unnecessary usings (swept under the rug)
+
+* General clean up of build warnings
+* Refactored primitive controls to be cleaner
+* Various HSS / VSS updates, mostly from the community
+* ScrollConflictManager updated to work better with nested HSS/VSS
+* UI Knob resolved to with screen space camera
+* Fix for the menu system, which was disabling prefabs instead of the scene instance
+* Fixed shader in UIParticle System
+* TextPic updated to support culling properly
+* Reorderable List updated with additional options
+* Screenspace overlay support added to the Tooltip control
+* UIParticle system now supports 3D rotation
+* UIVerticalScroller updated
+* Radial slider updated with
 
 ### Known issues
-Serialisation functionality has been removed due to several incompatibilities between platforms, suggest the UniversalSerialiser as an alternative. May bring back if there is demand. (or copy out the source from the previous release)
+No new issues in this release, but check the issues list for things we are currently working on:
+
+* [UI Extensions Issue log](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/issues?status=new&status=open)
 
 ## Upgrade Notes
-With this being a major version update, it is recommended to remove the old UI Extensions folder before importing the new asset.
+No significant concerns, should be able to update over the 2.1 package.  If upgrading prior to 2.1, we still recommend removing the UnityUIExtensions folder and then re-importing
 
 ----------------
 ## Release History
@@ -138,14 +125,19 @@ For the full release history, follow the below link to the full release notes pa
 
 There are almost 70+ extension controls / effect and other utilities in the project which are listed on the following page:
 
+> ## [Check out the control demos on our Tumblr page](https://www.tumblr.com/blog/unityuiextensions)
+> | [![UI Line Renderer](https://bytebucket.org/UnityUIExtensions/unity-ui-extensions/wiki/SiteImages/LineRenderer.gif)](https://www.tumblr.com/blog/unityuiextensions "UI Line Renderer") | [![UI Knob](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/SiteImages/UIKnob.gif)](https://www.tumblr.com/blog/unityuiextensions "UI Knob")   | [![ScrollSnap](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/SiteImages/ScrollSnap.gif)](https://www.tumblr.com/blog/unityuiextensions "Scroll Snap")| 
+> | :--- | :--- | :--- |
+> | [UI Line Renderer](https://www.tumblr.com/blog/unityuiextensions) | [UI Knob](https://www.tumblr.com/blog/unityuiextensions) |[Scroll Snap](https://www.tumblr.com/blog/unityuiextensions) | 
+
 ## [UI Extensions controls list](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/Controls)
 
 [Controls](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/Controls#markdown-header-controls)|||||
 ------|------|------|------|
-Accordion|ColorPicker|SelectionBox|UIButton|UIFlippable
-ComboBox|AutoCompleteComboBox|DropDownList|BoundToolTip|UIWindowBase
-UI_Knob|TextPic|InputFocus|Box Slider|CooldownButton
-Segmented Control|Stepper|||
+Accordion|ColorPicker|SelectionBox|UIFlippable|ComboBox
+AutoCompleteComboBox|DropDownList|BoundToolTip|UIWindowBase|UI_Knob
+TextPic|InputFocus|Box Slider|CooldownButton|Segmented Control
+Stepper||||
 ||||
 
 [Primitives](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/wiki/Controls#markdown-header-primitives)|||||

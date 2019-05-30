@@ -1,5 +1,7 @@
 ﻿using System;
 
+using UnityEngine;
+
 using Assets.Simulation.HexMap;
 
 namespace Assets.UI {
@@ -9,9 +11,11 @@ namespace Assets.UI {
 
         bool enabled { get; set; }
 
-        bool SuppressMovemnent { get; set; }
-        bool SuppressRotation  { get; set; }
-        bool SuppressZoom      { get; set; }
+        Camera ManagedCamera { get; }
+
+        bool SuppressMovement { get; set; }
+        bool SuppressRotation { get; set; }
+        bool SuppressZoom     { get; set; }
 
         float Zoom { get; }
 
