@@ -26,13 +26,13 @@ MonoBehaviour:
   _hillsElevationNoiseStrength: 0.2
   _outerRadius: 10
   _solidFactor: 0.8
-  _chunkWidth: 40
-  _chunkHeight: 40
+  _chunkWidth: 80
+  _chunkHeight: 80
   _terrainMaxY: 20
-  _terrainAlphamapResolution: 33
-  _terrainHeightmapResolution: 129
-  _terrainBasemapResolution: 16
-  _terrainBasemapDistance: 1000
+  _terrainAlphamapResolution: 65
+  _terrainHeightmapResolution: 257
+  _terrainBasemapResolution: 32
+  _terrainBasemapDistance: 100
   _terrainShadowCastingMode: 0
   _terrainHeightmapPixelError: 1
   _mapCollisionMask:
@@ -48,10 +48,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 232b224d5638d3c4995a08f0d004cab5, type: 3}
   - {fileID: 2800000, guid: 58f75ba49aa6ee94aa1e280f3b75bef6, type: 3}
   - {fileID: 2800000, guid: 4d8c5c61656734a4da424313375d5137, type: 3}
-  - {fileID: 2800000, guid: d6591c2f811c06c41a98a6111f7bd97a, type: 3}
-  - {fileID: 2800000, guid: b6d23a4590258af4bbdbfd1f7d762837, type: 3}
   - {fileID: 2800000, guid: f9ec3f37a376f974fb384ba71d671eda, type: 3}
-  - {fileID: 2800000, guid: 78aa86b12715c094c83cf0459113f709, type: 3}
   _seaFloorTextureIndex: 2
   _mountainTextureIndex: 5
   _riverAlphamap:
@@ -63,21 +60,15 @@ MonoBehaviour:
   - 0
   - 1
   - 0
-  - 0
-  - 0
-  - 0
   _floodPlainsAlphamap:
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   _waterSurfaceElevation: 0.093
   _seaFloorElevation: 0
   _flatlandsBaseElevation: 0.1
@@ -112,6 +103,7 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 1
       Material: {fileID: 2100000, guid: 2ce73f4ee28d9944f8ce32670b9adcfb, type: 2}
+      SuppressRendering: 0
   _riverSurfaceData:
     _useCollider: 0
     _useUVCoordinates: 0
@@ -125,6 +117,7 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 1
       Material: {fileID: 2100000, guid: 2ce73f4ee28d9944f8ce32670b9adcfb, type: 2}
+      SuppressRendering: 0
   _riverBankData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -138,6 +131,7 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 430db189169ee084b82042aabb708469, type: 2}
+      SuppressRendering: 0
   _riverDuckData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -151,6 +145,7 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: f04c236406dd08b4b8148cc6bf4659c4, type: 2}
+      SuppressRendering: 0
   _cultureData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -164,6 +159,7 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 068f5922517bafb4497259423643776e, type: 2}
+      SuppressRendering: 0
   _farmlandData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -177,6 +173,7 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 10b67cf5705184040ad557eca16eaa21, type: 2}
+      SuppressRendering: 0
   _roadData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -190,6 +187,7 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: c3ee6312adf8207499cfabf704eed04c, type: 2}
+      SuppressRendering: 0
   _marshWaterData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -203,6 +201,7 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 7eab57a6380cedc48a0d9c1825c2be28, type: 2}
+      SuppressRendering: 0
   _oasisWaterData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -216,6 +215,7 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: c4d24d6b79004704bbaf3877a7b99140, type: 2}
+      SuppressRendering: 0
   _oasisLandData:
     _useCollider: 0
     _useUVCoordinates: 0
@@ -229,6 +229,7 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 52c39f82be01f9b4c9dbeaefe9dffba5, type: 2}
+      SuppressRendering: 0
   _orientationMeshData:
     _useCollider: 0
     _useUVCoordinates: 0
@@ -242,6 +243,7 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 8b75f09941e6ca942947340a835a1ad0, type: 2}
+      SuppressRendering: 0
   _weightsMeshData:
     _useCollider: 0
     _useUVCoordinates: 0
@@ -255,6 +257,7 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 8b75f09941e6ca942947340a835a1ad0, type: 2}
+      SuppressRendering: 0
   _farmColors:
   - {r: 0.09439879, g: 0.71323526, b: 0.12427371, a: 1}
   - {r: 0.11176473, g: 0.5588235, b: 0, a: 1}
@@ -273,9 +276,9 @@ MonoBehaviour:
   _oasisWaterRadius: 3
   _oasisLandWidth: 2
   _orientationTextureData:
-    _resolution: 800
+    _resolution: 1200
     _depth: 8
     _renderTextureFormat: 0
     _textureFormat: 5
-  _maxParallelTerrainRefreshes: 30
+  _maxParallelTerrainRefreshes: 10
   _riverWeightShader: {fileID: 4800000, guid: 548ae0abc870086438b22b154e25d8f1, type: 3}

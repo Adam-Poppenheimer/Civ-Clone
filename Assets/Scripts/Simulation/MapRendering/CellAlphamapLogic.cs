@@ -55,6 +55,9 @@ namespace Assets.Simulation.MapRendering {
 
                 returnedAlphamap[newIndex] = 1f;
 
+            }else if(cell.Terrain == CellTerrain.FloodPlains) {
+                returnedAlphamap[(int)CellTerrain.Desert] = 1f;
+
             } else {
                 returnedAlphamap[(int)cell.Terrain] = 1f;
             }

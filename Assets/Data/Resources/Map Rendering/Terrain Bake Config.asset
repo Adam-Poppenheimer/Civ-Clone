@@ -3,8 +3,9 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -18,6 +19,6 @@ MonoBehaviour:
   _bakeElementsHighRes: 11
   _bakeElementsMediumRes: 52
   _bakeElementsLowRes: 0
-  _bakeTextureDimensionsHighRes: {x: 900, y: 900}
-  _bakeTextureDimensionsMediumRes: {x: 700, y: 700}
-  _bakeTextureDimensionsLowRes: {x: 500, y: 500}
+  _bakeTextureDimensionsHighRes: {x: 1800, y: 1800}
+  _bakeTextureDimensionsMediumRes: {x: 1400, y: 1400}
+  _bakeTextureDimensionsLowRes: {x: 1000, y: 1000}
