@@ -383,6 +383,8 @@ namespace Assets.Simulation.HexMap {
                     var newChunk = CreateChunk(chunkX - RenderConfig.InnerRadius, chunkZ - RenderConfig.OuterRadius, chunkWidth, chunkHeight);
 
                     chunks[chunkIndexX, chunkIndexZ] = newChunk;
+
+                    newChunk.gameObject.name = string.Format("Chunk[{0}, {1}]", chunkIndexX, chunkIndexZ);
                 }
             }
 

@@ -80,6 +80,8 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private void TryBakeChunks() {
+            Profiler.BeginSample("TryBakeChunks()");
+
             int dataCount = Math.Min(RenderConfig.MaxParallelTerrainRefreshes, FreeBakerPairs.Count);
 
             var chunksToProcess = UnbakedChunks.Where(chunk => !chunk.IsRefreshing).Take(dataCount).ToArray();
@@ -120,6 +122,8 @@ namespace Assets.Simulation.MapRendering {
                     activeChunk.WaterBakeTexture = newWater;
                 }
             }
+
+            Profiler.EndSample();
         }
 
         private void BakeLand(IMapChunk chunk, Texture2D landTexture, TerrainSubBaker subBaker) {

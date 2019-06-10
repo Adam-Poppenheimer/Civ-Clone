@@ -99,8 +99,6 @@ namespace Assets.Simulation.MapRendering {
 
         #endregion
 
-        [SerializeField] private BoxCollider CullingCollider = null;
-
         private TerrainCollider TerrainCollider;
 
         private TerrainRefreshType RefreshFlags = TerrainRefreshType.None;
@@ -265,9 +263,6 @@ namespace Assets.Simulation.MapRendering {
         public void Initialize(Vector3 position, float width, float height) {
             Width  = width;
             Height = height;
-
-            CullingCollider.size   = new Vector3(Width,      1f, Height);
-            CullingCollider.center = new Vector3(Width / 2f, 0f, Height / 2f);
 
             var terrainData = BuildTerrainData(width, height);
 
@@ -588,9 +583,9 @@ namespace Assets.Simulation.MapRendering {
                         textureNormalX = maxTextureNormalX * terrainNormalX;
                         textureNormalZ = maxTextureNormalZ * terrainNormalZ;
 
-                        orientationColor = ColorCorrection.ARBG_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeOrientationTexture));
-                        weightsColor     = ColorCorrection.ARBG_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeWeightsTexture));
-                        duckColor        = ColorCorrection.ARBG_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeDuckTexture));
+                        orientationColor = ColorCorrection.ARGB_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeOrientationTexture));
+                        weightsColor     = ColorCorrection.ARGB_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeWeightsTexture));
+                        duckColor        = ColorCorrection.ARGB_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeDuckTexture));
 
                         PointOrientationLogic.GetOrientationDataFromColors(
                             pointOrientation, indexBytes, orientationColor, weightsColor, duckColor
@@ -669,9 +664,9 @@ namespace Assets.Simulation.MapRendering {
                         textureNormalX = maxTextureNormalX * terrainNormalX;
                         textureNormalZ = maxTextureNormalZ * terrainNormalZ;
 
-                        orientationColor = ColorCorrection.ARBG_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeOrientationTexture));
-                        weightsColor     = ColorCorrection.ARBG_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeWeightsTexture));
-                        duckColor        = ColorCorrection.ARBG_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeDuckTexture));
+                        orientationColor = ColorCorrection.ARGB_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeOrientationTexture));
+                        weightsColor     = ColorCorrection.ARGB_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeWeightsTexture));
+                        duckColor        = ColorCorrection.ARGB_To_RGBA(RawTextureSampler.SamplePoint(textureNormalX, textureNormalZ, unsafeDuckTexture));
 
                         PointOrientationLogic.GetOrientationDataFromColors(
                             pointOrientation, indexBytes, orientationColor, weightsColor, duckColor

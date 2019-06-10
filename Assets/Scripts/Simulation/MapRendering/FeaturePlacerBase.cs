@@ -39,9 +39,7 @@ namespace Assets.Simulation.MapRendering {
         );
 
         protected void AddFeature(Transform prefab, Vector3 location, HexHash hash) {
-            Transform instance = GameObject.Instantiate(prefab);
-
-            instance.SetParent(FeatureContainer, false);
+            Transform instance = GameObject.Instantiate(prefab, FeatureContainer);
 
             instance.position      = NoiseGenerator.Perturb(location);
             instance.localRotation = Quaternion.Euler(0f, 360f * hash.B, 0f);

@@ -83,6 +83,8 @@ namespace Assets.Simulation.MapGeneration {
         #region from IHexMapGenerator
 
         public void GenerateMap(IMapTemplate template, IMapGenerationVariables variables) {
+            Profiler.BeginSample("GenerateMap()");
+
             CellClimateLogic.Reset(template);
 
             var oldRandomState = SetRandomState();
@@ -103,6 +105,8 @@ namespace Assets.Simulation.MapGeneration {
             }
 
             UnityEngine.Random.state = oldRandomState;
+
+            Profiler.EndSample();
         }
 
         #endregion

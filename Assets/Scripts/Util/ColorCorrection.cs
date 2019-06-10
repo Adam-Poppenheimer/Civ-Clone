@@ -12,11 +12,11 @@ namespace Assets.Util {
 
         #region static methods
 
-        public static Color32 ARBG_To_RGBA(Color32 falseARGB) {
+        public static Color32 ARGB_To_RGBA(Color32 falseARGB) {
             return new Color32(falseARGB.g, falseARGB.b, falseARGB.a, falseARGB.r);
         }
 
-        public static Color ARBG_To_RGBA(Color falseARGB) {
+        public static Color ARGB_To_RGBA(Color falseARGB) {
             return new Color(falseARGB.g, falseARGB.b, falseARGB.a, falseARGB.r);
         }
 

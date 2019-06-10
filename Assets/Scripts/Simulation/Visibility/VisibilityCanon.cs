@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -49,8 +50,8 @@ namespace Assets.Simulation.Visibility {
 
         #endregion
 
-        private Dictionary<IHexCell, Dictionary<ICivilization, int>> VisibilityOfCellToCiv =
-            new Dictionary<IHexCell, Dictionary<ICivilization, int>>();
+        private ConcurrentDictionary<IHexCell, Dictionary<ICivilization, int>> VisibilityOfCellToCiv =
+            new ConcurrentDictionary<IHexCell, Dictionary<ICivilization, int>>();
 
 
 
