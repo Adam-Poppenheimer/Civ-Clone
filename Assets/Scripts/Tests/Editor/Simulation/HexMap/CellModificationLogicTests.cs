@@ -90,7 +90,7 @@ namespace Assets.Tests.Simulation.HexMap {
                         Shape = CellShape.Flatlands, Terrain = CellTerrain.Grassland,
                         HasRiver = true
                     }
-                }).SetName("Changing flat non-desert with river to flood plains").Returns(false);
+                }).SetName("Changing flat non-desert with river to flood plains").Returns(true);
 
                 yield return new TestCaseData(new CanChangeTerrainOfCellTestData() {
                     Terrain = CellTerrain.FloodPlains,
@@ -98,7 +98,7 @@ namespace Assets.Tests.Simulation.HexMap {
                         Shape = CellShape.Flatlands, Terrain = CellTerrain.Desert,
                         HasRiver = false
                     }
-                }).SetName("Changing flat desert without river to flood plains").Returns(false);
+                }).SetName("Changing flat desert without river to flood plains").Returns(true);
             }
         }
 

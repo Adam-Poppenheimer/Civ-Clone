@@ -35,11 +35,7 @@ namespace Assets.Simulation.HexMap {
         #region from ICellPropertyModificationLogic
 
         public bool CanChangeTerrainOfCell(IHexCell cell, CellTerrain terrain) {
-            if(terrain == CellTerrain.FloodPlains) {
-                return cell.Terrain == CellTerrain.Desert && cell.Shape == CellShape.Flatlands && RiverCanon.HasRiver(cell);
-            }else {
-                return true;
-            }
+            return terrain != CellTerrain.FloodPlains || cell.Shape == CellShape.Flatlands;
         }
 
         public void ChangeTerrainOfCell(IHexCell cell, CellTerrain terrain) {

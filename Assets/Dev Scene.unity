@@ -77930,9 +77930,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 123a49e82ed4e294787afcb70ec6b5bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GoldField: {fileID: 0}
-  CultureField: {fileID: 0}
-  ScienceField: {fileID: 0}
+  GoldField: {fileID: 782930655}
+  CultureField: {fileID: 1620056023}
+  ScienceField: {fileID: 1121598148}
 --- !u!1 &1755645424
 GameObject:
   m_ObjectHideFlags: 0
