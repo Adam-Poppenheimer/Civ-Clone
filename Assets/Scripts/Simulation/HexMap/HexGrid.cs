@@ -113,17 +113,6 @@ namespace Assets.Simulation.HexMap {
         #region from IHexGrid        
 
         public void Build(int cellCountX, int cellCountZ) {
-            Clear();
-
-            CellCountX = cellCountX;
-            CellCountZ = cellCountZ;
-
-            ShaderData.Initialize(CellCountX, CellCountZ);
-
-            CreateCells();
-            CreateChunks();
-            AttachChunksToCells();
-
             RiverSurfaceMesh = HexMeshFactory.Create("River Surfaces", RenderConfig.RiverSurfaceData);
             RiverBankMesh    = HexMeshFactory.Create("River Banks",    RenderConfig.RiverBankData);
             RiverDuckMesh    = HexMeshFactory.Create("River Ducking",  RenderConfig.RiverDuckData);
@@ -134,9 +123,16 @@ namespace Assets.Simulation.HexMap {
             RiverDuckMesh   .transform.SetParent(transform, false);
             FarmMesh        .transform.SetParent(transform, false);
 
-            foreach(var chunk in Chunks) {
-                chunk.Refresh(TerrainRefreshType.All);
-            }
+            Clear();
+
+            CellCountX = cellCountX;
+            CellCountZ = cellCountZ;
+
+            ShaderData.Initialize(CellCountX, CellCountZ);
+
+            CreateCells();
+            CreateChunks();
+            AttachChunksToCells();            
         }
 
         public void Clear() {

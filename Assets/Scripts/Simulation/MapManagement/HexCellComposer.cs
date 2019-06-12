@@ -141,6 +141,10 @@ namespace Assets.Simulation.MapManagement {
                 cellToModify.WorkerSlot.IsOccupied = cellData.IsSlotOccupied;
                 cellToModify.WorkerSlot.IsLocked   = cellData.IsSlotLocked;
             }
+
+            foreach(var chunk in Grid.Chunks) {
+                chunk.Refresh(MapRendering.TerrainRefreshType.All);
+            }
         }
 
         #endregion

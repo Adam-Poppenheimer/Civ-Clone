@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using Zenject;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Players;
+using Assets.Simulation.MapManagement;
 
 using UnityCustomUtilities.Extensions;
 
@@ -31,6 +33,10 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
+        private Coroutine GenerateMapCoroutine;
+
+
+
         private IMapGenerationConfig        Config;
         private ICivilizationFactory        CivFactory;
         private IHexGrid                    Grid;
@@ -45,6 +51,8 @@ namespace Assets.Simulation.MapGeneration {
         private ISectionSubdivisionLogic    SubdivisionLogic;
         private ICivilizationConfig         CivConfig;
         private IBrainPile                  BrainPile;
+        private IMapComposer                MapComposer;
+        private MonoBehaviour               CoroutineInvoker;
 
         #endregion
 
@@ -58,7 +66,8 @@ namespace Assets.Simulation.MapGeneration {
             IGridPartitionLogic gridPartitionLogic, IWaterRationalizer waterRationalizer,
             IHomelandGenerator homelandGenerator, ITemplateSelectionLogic templateSelectionLogic,
             ICellClimateLogic cellClimateLogic, ISectionSubdivisionLogic subdivisionLogic,
-            ICivilizationConfig civConfig, IBrainPile brainPile
+            ICivilizationConfig civConfig, IBrainPile brainPile, IMapComposer mapComposer,
+            [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
             Config                     = config;
             CivFactory                 = civFactory;
@@ -74,6 +83,8 @@ namespace Assets.Simulation.MapGeneration {
             SubdivisionLogic           = subdivisionLogic;
             CivConfig                  = civConfig;
             BrainPile                  = brainPile;
+            MapComposer                = mapComposer;
+            CoroutineInvoker           = coroutineInvoker;
         }
 
         #endregion
@@ -82,7 +93,21 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IHexMapGenerator
 
+
+
         public void GenerateMap(IMapTemplate template, IMapGenerationVariables variables) {
+            if(GenerateMapCoroutine == null) {
+                GenerateMapCoroutine = CoroutineInvoker.StartCoroutine(GenerateMap_Perform(template, variables));
+            }
+        }
+
+        private IEnumerator GenerateMap_Perform(IMapTemplate template, IMapGenerationVariables variables) {
+            MapComposer.ClearRuntime(false);
+
+            while(MapComposer.IsProcessing) {
+                yield return new WaitForEndOfFrame();
+            }
+
             Profiler.BeginSample("GenerateMap()");
 
             CellClimateLogic.Reset(template);
@@ -105,6 +130,12 @@ namespace Assets.Simulation.MapGeneration {
             }
 
             UnityEngine.Random.state = oldRandomState;
+
+            GenerateMapCoroutine = null;
+
+            foreach(var chunk in Grid.Chunks) {
+                chunk.Refresh(MapRendering.TerrainRefreshType.All);
+            }
 
             Profiler.EndSample();
         }

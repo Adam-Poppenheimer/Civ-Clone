@@ -91,6 +91,10 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             PlayerFactory.CreatePlayer(playerCiv,    BrainPile.HumanBrain);
             PlayerFactory.CreatePlayer(barbarianCiv, BrainPile.BarbarianBrain);
+
+            foreach(var chunk in Grid.Chunks) {
+                chunk.Refresh(Simulation.MapRendering.TerrainRefreshType.All);
+            }
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {

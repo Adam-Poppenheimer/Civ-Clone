@@ -23,7 +23,7 @@ namespace Assets.Simulation.MapManagement {
         #region from IMapComposer
 
         public bool IsProcessing {
-            get { return DecomposeCoroutine != null; }
+            get { return (DecomposeCoroutine != null) || (ClearCoroutine != null); }
         }
 
         #endregion
