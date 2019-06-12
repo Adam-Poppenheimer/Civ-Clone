@@ -41,7 +41,6 @@ namespace Assets.UI.StateMachine.States.TitleScreen {
 
             VisibilityCanon.ResourceVisibilityMode = ResourceVisibilityMode.HideAll;
             VisibilityCanon.CellVisibilityMode     = CellVisibilityMode.HideAll;
-            VisibilityCanon.RevealMode             = RevealMode.Immediate;
 
             VisibilityResponder.UpdateVisibility = false;
             VisibilityResponder.TryResetCellVisibility();

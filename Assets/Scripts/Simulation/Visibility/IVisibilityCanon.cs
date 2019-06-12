@@ -16,8 +16,6 @@ namespace Assets.Simulation.Visibility {
         CellVisibilityMode     CellVisibilityMode     { get; set; }
         ResourceVisibilityMode ResourceVisibilityMode { get; set; }
 
-        RevealMode RevealMode { get; set; }
-
         #endregion
 
         #region methods

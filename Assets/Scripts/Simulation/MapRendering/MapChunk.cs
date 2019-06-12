@@ -12,6 +12,7 @@ using Unity.Collections;
 using Zenject;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Visibility;
 using Assets.Util;
 
 using UnityCustomUtilities.Extensions;
@@ -202,6 +203,7 @@ namespace Assets.Simulation.MapRendering {
         private IFullMapRefresher        FullMapRefresher;
         private Transform                FeatureContainer;
         private MapRenderingSignals      MapRenderingSignals;
+        private IVisibilityResponder     VisibilityResponder;
 
         #endregion
 
@@ -216,7 +218,8 @@ namespace Assets.Simulation.MapRendering {
             IMarshTriangulator marshTriangulator, IOasisTriangulator oasisTriangulator,
             ITerrainBaker terrainBaker, IOrientationBaker orientationBaker, IGeometry2D geometry2D,
             IPointOrientationLogic pointOrientationLogic, IFullMapRefresher fullMapRefresher,
-            [Inject(Id = "Feature Container")] Transform featureContainer, MapRenderingSignals mapRenderingSignals
+            [Inject(Id = "Feature Container")] Transform featureContainer, MapRenderingSignals mapRenderingSignals,
+            IVisibilityResponder visibilityResponder
         ) {
             AlphamapLogic         = alphamapLogic;
             HeightLogic           = heightLogic;
@@ -236,6 +239,7 @@ namespace Assets.Simulation.MapRendering {
             FullMapRefresher      = fullMapRefresher;
             FeatureContainer      = featureContainer;
             MapRenderingSignals   = mapRenderingSignals;
+            VisibilityResponder   = visibilityResponder;
         }
 
         #region Unity messages
@@ -328,6 +332,79 @@ namespace Assets.Simulation.MapRendering {
             }
 
             RefreshFlags |= refreshTypes;
+        }
+
+        private IEnumerator Refresh_Perform() {
+            MapRenderingSignals.ChunkStartingToRefresh.OnNext(this);
+
+            yield return SkipFrame;
+
+            while(FullMapRefresher.IsRefreshingRivers) {
+                yield return SkipFrame;
+            }
+
+            yield return SkipFrame;
+
+            bool flushTerrain = false;
+
+            if((RefreshFlags & TerrainRefreshType.RequiresOrientation) != 0) {
+                ChunkOrientationData orientationData = OrientationBaker.MakeOrientationRequestForChunk(this);
+
+                while(!orientationData.IsReady) {
+                    yield return SkipFrame;
+                }
+
+                if(((RefreshFlags & TerrainRefreshType.Alphamap) == TerrainRefreshType.Alphamap)) {
+                    yield return StartCoroutine(RefreshAlphamap(orientationData));
+                    flushTerrain = true;
+                }
+
+                if(((RefreshFlags & TerrainRefreshType.Heightmap) == TerrainRefreshType.Heightmap)) {
+                    yield return StartCoroutine(RefreshHeightmap(orientationData));
+                    flushTerrain = true;
+                }
+
+                OrientationBaker.ReleaseOrientationData(orientationData);
+            }
+
+            if(((RefreshFlags & TerrainRefreshType.Water) == TerrainRefreshType.Water)) {
+                RefreshWater();
+            }
+
+            if(flushTerrain) {
+                Terrain.Flush();
+                yield return SkipFrame;
+            }
+
+            if(((RefreshFlags & TerrainRefreshType.Culture) == TerrainRefreshType.Culture)) {
+                RefreshCulture();
+            }
+
+            if(((RefreshFlags & TerrainRefreshType.Features) == TerrainRefreshType.Features)) {
+                RefreshFeatures();
+            }
+
+            if(((RefreshFlags & TerrainRefreshType.Roads) == TerrainRefreshType.Roads)) {
+                RefreshRoads();
+            }
+
+            if(((RefreshFlags & TerrainRefreshType.Marshes) == TerrainRefreshType.Marshes)) {
+                RefreshMarshes();
+            }
+
+            if(((RefreshFlags & TerrainRefreshType.Oases) == TerrainRefreshType.Oases)) {
+                RefreshOases();
+            }
+
+            if(((RefreshFlags & TerrainRefreshType.Visibility) == TerrainRefreshType.Visibility)) {
+                RefreshVisibility();
+            }
+
+            RefreshFlags = TerrainRefreshType.None;
+
+            RefreshCoroutine = null;
+
+            MapRenderingSignals.ChunkFinishedRefreshing.OnNext(this);
         }
 
         public bool DoesCellOverlapChunk(IHexCell cell) {
@@ -454,79 +531,6 @@ namespace Assets.Simulation.MapRendering {
         }
 
         #endregion
-
-        private IEnumerator Refresh_Perform() {
-            MapRenderingSignals.ChunkStartingToRefresh.OnNext(this);
-
-            yield return SkipFrame;
-
-            while(FullMapRefresher.IsRefreshingRivers) {
-                yield return SkipFrame;
-            }
-
-            yield return SkipFrame;
-
-            bool flushTerrain = false;
-
-            if((RefreshFlags & TerrainRefreshType.RequiresOrientation) != 0) {
-                ChunkOrientationData orientationData = OrientationBaker.MakeOrientationRequestForChunk(this);
-
-                while(!orientationData.IsReady) {
-                    yield return SkipFrame;
-                }
-
-                if(((RefreshFlags & TerrainRefreshType.Alphamap) == TerrainRefreshType.Alphamap)) {
-                    yield return StartCoroutine(RefreshAlphamap(orientationData));
-                    flushTerrain = true;
-                }
-
-                if(((RefreshFlags & TerrainRefreshType.Heightmap) == TerrainRefreshType.Heightmap)) {
-                    yield return StartCoroutine(RefreshHeightmap(orientationData));
-                    flushTerrain = true;
-                }
-
-                OrientationBaker.ReleaseOrientationData(orientationData);
-            }
-
-            if(((RefreshFlags & TerrainRefreshType.Water) == TerrainRefreshType.Water)) {
-                RefreshWater();
-            }
-
-            if(flushTerrain) {
-                Terrain.Flush();
-                yield return SkipFrame;
-            }
-
-            if(((RefreshFlags & TerrainRefreshType.Culture) == TerrainRefreshType.Culture)) {
-                RefreshCulture();
-            }
-
-            if(((RefreshFlags & TerrainRefreshType.Features) == TerrainRefreshType.Features)) {
-                RefreshFeatures();
-            }
-
-            if(((RefreshFlags & TerrainRefreshType.Roads) == TerrainRefreshType.Roads)) {
-                RefreshRoads();
-            }
-
-            if(((RefreshFlags & TerrainRefreshType.Marshes) == TerrainRefreshType.Marshes)) {
-                RefreshMarshes();
-            }
-
-            if(((RefreshFlags & TerrainRefreshType.Oases) == TerrainRefreshType.Oases)) {
-                RefreshOases();
-            }
-
-            if(((RefreshFlags & TerrainRefreshType.Visibility) == TerrainRefreshType.Visibility)) {
-                RefreshVisibility();
-            }
-
-            RefreshFlags = TerrainRefreshType.None;
-
-            RefreshCoroutine = null;
-
-            MapRenderingSignals.ChunkFinishedRefreshing.OnNext(this);
-        }
 
         private IEnumerator RefreshAlphamap(ChunkOrientationData orientationData) {
             var terrainData = Terrain.terrainData;
@@ -727,9 +731,8 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private void RefreshVisibility() {
-            foreach(var cell in centeredCells) {
-                ShaderData.RefreshVisibility(cell);
-            }
+            VisibilityResponder.TryResetCellVisibility();
+            VisibilityResponder.TryResetResourceVisibility();
         }
 
         private void RefreshRoads() {

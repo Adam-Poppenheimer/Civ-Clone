@@ -20,6 +20,19 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
+        #region from IMapComposer
+
+        public bool IsProcessing {
+            get { return DecomposeCoroutine != null; }
+        }
+
+        #endregion
+
+        private Coroutine DecomposeCoroutine;
+        private Coroutine ClearCoroutine;
+
+
+
         private IHexCellComposer                HexCellComposer;
         private ICivilizationComposer           CivilizationComposer;
         private IPlayerComposer                 PlayerComposer;
@@ -97,11 +110,13 @@ namespace Assets.Simulation.MapManagement {
         }
 
         public void DecomposeDataIntoRuntime(SerializableMapData mapData, Action performAfterDecomposition = null) {
-            CoroutineInvoker.StartCoroutine(DecomposeDataIntoRuntimeCoroutine(mapData, performAfterDecomposition));
+            if(DecomposeCoroutine == null) {
+                DecomposeCoroutine = CoroutineInvoker.StartCoroutine(DecomposeDataIntoRuntime_Coroutine(mapData, performAfterDecomposition));
+            }
         }
 
-        private IEnumerator DecomposeDataIntoRuntimeCoroutine(SerializableMapData mapData, Action performAfterDecomposition) {
-            yield return ClearRuntimeCoroutine(false);
+        private IEnumerator DecomposeDataIntoRuntime_Coroutine(SerializableMapData mapData, Action performAfterDecomposition) {
+            yield return ClearRuntime_Coroutine(false);
 
             HexCellComposer.DecomposeCells(mapData);
 
@@ -133,13 +148,17 @@ namespace Assets.Simulation.MapManagement {
             if(performAfterDecomposition != null) {
                 performAfterDecomposition();
             }
+
+            DecomposeCoroutine = null;
         }
 
         public void ClearRuntime(bool immediateMode) {
-            CoroutineInvoker.StartCoroutine(ClearRuntimeCoroutine(immediateMode));
+            if(ClearCoroutine == null) {
+                ClearCoroutine = CoroutineInvoker.StartCoroutine(ClearRuntime_Coroutine(immediateMode));
+            }
         }
 
-        private IEnumerator ClearRuntimeCoroutine(bool immediateMode) {
+        private IEnumerator ClearRuntime_Coroutine(bool immediateMode) {
             var oldVisibility = VisibilityResponder.UpdateVisibility;
 
             VisibilityResponder.UpdateVisibility = false;
@@ -169,6 +188,8 @@ namespace Assets.Simulation.MapManagement {
             VisibilityCanon.ClearCellVisibility();
 
             VisibilityResponder.UpdateVisibility = oldVisibility;
+
+            ClearCoroutine = null;
         }
 
         #endregion

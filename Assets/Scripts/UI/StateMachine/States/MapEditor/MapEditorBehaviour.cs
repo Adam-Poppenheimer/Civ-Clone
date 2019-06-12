@@ -70,14 +70,12 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             Brain.ClearListeners();
             Brain.EnableCameraMovement();
             
-            VisibilityResponder.UpdateVisibility = true;
-            VisibilityResponder.TryResetCellVisibility();
-
             VisibilityCanon.ResourceVisibilityMode = ResourceVisibilityMode.RevealAll;
             VisibilityCanon.CellVisibilityMode     = CellVisibilityMode.RevealAll;
-            VisibilityCanon.RevealMode             = RevealMode.Immediate;
 
             ExplorationCanon.ExplorationMode = CellExplorationMode.AllCellsExplored;
+
+            VisibilityResponder.UpdateVisibility = true;
 
             UnitMapIconManager.BuildIcons();
             UnitMapIconManager.SetActive(true);

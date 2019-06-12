@@ -68,7 +68,7 @@ namespace Assets.Simulation.MapRendering {
 
         private void OnCellPossessionChanged(Tuple<ICity, IHexCell> data) {
             foreach(var affectedChunk in GetAffectedChunks(data.Item2)) {
-                affectedChunk.Refresh(TerrainRefreshType.Culture | TerrainRefreshType.Visibility);
+                affectedChunk.Refresh(TerrainRefreshType.Culture);
             }
         }
 
@@ -89,7 +89,7 @@ namespace Assets.Simulation.MapRendering {
                                                     .Distinct();
 
             foreach(var chunk in affectedChunks) {
-                chunk.Refresh(TerrainRefreshType.Culture | TerrainRefreshType.Visibility);
+                chunk.Refresh(TerrainRefreshType.Culture);
             }
         }
 
@@ -133,13 +133,13 @@ namespace Assets.Simulation.MapRendering {
 
         private void OnCellVegetationChanged(HexPropertyChangedData<CellVegetation> data) {
             foreach(var chunk in GetAffectedChunks(data.Cell)) {
-                chunk.Refresh(TerrainRefreshType.Features | TerrainRefreshType.Visibility | TerrainRefreshType.Marshes);
+                chunk.Refresh(TerrainRefreshType.Features | TerrainRefreshType.Marshes);
             }
         }
 
         private void OnCellFeatureChanged(HexPropertyChangedData<CellFeature> data) {
             foreach(var chunk in GetAffectedChunks(data.Cell)) {
-                chunk.Refresh(TerrainRefreshType.Features | TerrainRefreshType.Visibility | TerrainRefreshType.Oases);
+                chunk.Refresh(TerrainRefreshType.Features | TerrainRefreshType.Oases);
             }
         }
 

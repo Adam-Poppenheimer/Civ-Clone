@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.MapRendering {
 
-    public class HexCellShaderData : MonoBehaviour, IHexCellShaderData {
+    public class HexCellShaderData : IHexCellShaderData {
 
         #region static fields and properties
 
@@ -30,7 +31,7 @@ namespace Assets.Simulation.MapRendering {
         private Texture2D CellTexture;
         private Color32[] CellTextureData;
 
-        private List<IHexCell> TransitioningCells = new List<IHexCell>();
+        private Coroutine ApplyTextureCoroutine;
 
 
 
@@ -38,41 +39,28 @@ namespace Assets.Simulation.MapRendering {
         private IVisibilityCanon  VisibilityCanon;
         private IExplorationCanon ExplorationCanon;
         private IMapRenderConfig  RenderConfig;
+        private MonoBehaviour     CoroutineInvoker;
+
+        #endregion
+
+        #region constructors
+
+        [Inject]
+        public HexCellShaderData(
+            IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon, IMapRenderConfig renderConfig,
+            [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
+        ) {
+            VisibilityCanon  = visibilityCanon;
+            ExplorationCanon = explorationCanon;
+            RenderConfig     = renderConfig;
+            CoroutineInvoker = coroutineInvoker;
+        }
 
         #endregion
 
         #region instance methods
 
-        [Inject]
-        public void InjectDependencies(
-            IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon, IMapRenderConfig renderConfig
-        ) {
-            VisibilityCanon          = visibilityCanon;
-            ExplorationCanon         = explorationCanon;
-            RenderConfig             = renderConfig;
-        }
-
-        #region Unity messages
-
-        private void LateUpdate() {
-            int delta = (int)(Time.deltaTime * TransitionSpeed);
-            if(delta <= 0) {
-                delta = 1;
-            }
-
-            for(int i = 0; i < TransitioningCells.Count; i++) {
-                if(!UpdateCellData(TransitioningCells[i], delta)) {
-                    TransitioningCells[i--] = TransitioningCells[TransitioningCells.Count - 1];
-                    TransitioningCells.RemoveAt(TransitioningCells.Count - 1);
-                }
-            }
-
-            CellTexture.SetPixels32(CellTextureData);
-            CellTexture.Apply();
-            enabled = TransitioningCells.Count > 0;
-        }
-
-        #endregion
+        #region from IHexCellShaderData
 
         public void Initialize(int x, int z) {
             if(CellTexture != null) {
@@ -99,57 +87,31 @@ namespace Assets.Simulation.MapRendering {
                     CellTextureData[i] = new Color32(0, 0, 0, 0);
                 }
             }
-
-            TransitioningCells.Clear();
-
-            enabled = true;
         }
 
         public void RefreshVisibility(IHexCell cell) {
-            if(VisibilityCanon.RevealMode == RevealMode.Immediate) {
-                CellTextureData[cell.Index].r = VisibilityCanon.IsCellVisible(cell) ? (byte)255 : (byte)0;
-
-                if(CellTextureData[cell.Index].b != 255) {
-                    CellTextureData[cell.Index].b = 255;
-                    CellTextureData[cell.Index].r = 0;
-                }
-            }else if(VisibilityCanon.RevealMode == RevealMode.Fade) {
-                TransitioningCells.Add(cell);
-            }else {
-                throw new NotImplementedException("No behavior specified for RevealMode " + VisibilityCanon.RevealMode);
-            }
-
+            CellTextureData[cell.Index].r = VisibilityCanon .IsCellVisible (cell) ? (byte)255 : (byte)0;
             CellTextureData[cell.Index].g = ExplorationCanon.IsCellExplored(cell) ? (byte)255 : (byte)0;
-            
-            enabled = true;
+            CellTextureData[cell.Index].b = VisibilityCanon .IsCellVisible (cell) ? (byte)255 : (byte)0;
+
+            if(ApplyTextureCoroutine == null) {
+                ApplyTextureCoroutine = CoroutineInvoker.StartCoroutine(ApplyTexture());
+            }
         }
 
         public void SetMapData(IHexCell cell, float data) {
             CellTextureData[cell.Index].b = data < 0f ? (byte)0 : (data < 1f ? (byte)(data * 254f) : (byte)254f);
         }
 
-        private bool UpdateCellData(IHexCell cell, int delta) {
-            int index = cell.Index;
-            Color32 data = CellTextureData[index];
-            bool stillUpdating = false;
+        #endregion
 
-            if(VisibilityCanon.IsCellVisible(cell) && data.r < 255) {
-                stillUpdating = true;
-                int newVisibility = data.r + delta;
-                data.r = newVisibility >= 255 ? (byte)255 : (byte)newVisibility;
+        private IEnumerator ApplyTexture() {
+            yield return new WaitForEndOfFrame();
 
-            }else if(!VisibilityCanon.IsCellVisible(cell) && data.r > 0) {
-                stillUpdating = true;
-                int newVisibility = data.r - delta;
-                data.r = newVisibility < 0 ? (byte)0 : (byte)newVisibility;
-            }
+            CellTexture.SetPixels32(CellTextureData);
+            CellTexture.Apply();
 
-            if(!stillUpdating) {
-                data.b = 0;
-            }
-
-            CellTextureData[index] = data;
-            return stillUpdating;
+            ApplyTextureCoroutine = null;
         }
 
         #endregion

@@ -13,10 +13,9 @@ using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Units;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.MapResources;
 using Assets.Simulation.Core;
 using Assets.Simulation.Players;
-using Assets.Simulation.Technology;
+using Assets.Simulation.MapRendering;
 
 namespace Assets.Simulation.Visibility {
 
@@ -44,6 +43,7 @@ namespace Assets.Simulation.Visibility {
         private ICityFactory                                  CityFactory;
         private IHexGrid                                      Grid;
         private MonoBehaviour                                 CoroutineInvoker;
+        private IHexCellShaderData                            HexCellShaderData;
 
         #endregion
 
@@ -55,17 +55,19 @@ namespace Assets.Simulation.Visibility {
             IPossessionRelationship<ICivilization, ICity>    cityPossessionCanon,
             IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
             ICityLineOfSightLogic cityLineOfSightLogic,
-            IUnitVisibilityLogic unitLineOfSightLogic,
-            [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker,
+            IUnitVisibilityLogic unitLineOfSightLogic,           
             IUnitFactory unitFactory, 
             ICityFactory cityFactory,
             IHexGrid grid,
+            [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker,
+            IHexCellShaderData hexCellShaderData,
             UnitSignals unitSignals,
             CitySignals citySignals,
             HexCellSignals cellSignals,
             CivilizationSignals civSignals,
             VisibilitySignals visibilitySignals,
-            CoreSignals coreSignals
+            CoreSignals coreSignals,
+            MapRenderingSignals mapRenderingSignals
         ){
             UnitPossessionCanon  = unitPossessionCanon;
             CityPossessionCanon  = cityPossessionCanon;
@@ -77,6 +79,7 @@ namespace Assets.Simulation.Visibility {
             CityFactory          = cityFactory;
             Grid                 = grid;
             CoroutineInvoker     = coroutineInvoker;
+            HexCellShaderData    = hexCellShaderData;
 
             unitSignals.LeftLocation   .Subscribe(OnUnitLeftLocation);
             unitSignals.EnteredLocation.Subscribe(OnUnitEnteredLocation);
@@ -98,6 +101,9 @@ namespace Assets.Simulation.Visibility {
             visibilitySignals.ResourceVisibilityModeChanged.Subscribe(unit => TryResetResourceVisibility());
 
             coreSignals.ActivePlayerChanged.Subscribe(OnActivePlayerChanged);
+
+            mapRenderingSignals.MapFinishedLoading.Subscribe(Unit => TryResetCellVisibility    ());
+            mapRenderingSignals.MapFinishedLoading.Subscribe(Unit => TryResetResourceVisibility());
         }
 
         #endregion
@@ -123,6 +129,10 @@ namespace Assets.Simulation.Visibility {
         private IEnumerator ResetCellVisibility() {
             yield return new WaitForEndOfFrame();
 
+            while(Grid.Chunks.Any(chunk => chunk.IsRefreshing)) {
+                yield return new WaitForEndOfFrame();
+            }
+
             VisibilityCanon.ClearCellVisibility();
 
             foreach(var unit in UnitFactory.AllUnits) {
@@ -143,18 +153,20 @@ namespace Assets.Simulation.Visibility {
                 }
             }
 
-            foreach(var chunk in Grid.Chunks) {
-                chunk.Refresh(MapRendering.TerrainRefreshType.Visibility);
+            foreach(var cell in Grid.Cells) {
+                HexCellShaderData.RefreshVisibility(cell);
             }
 
             ResetVisionCoroutine = null;
+
+            yield break;
         }
 
         private IEnumerator ResetResourceVisibility() {
             yield return new WaitForEndOfFrame();
 
             foreach(var chunk in Grid.Chunks) {
-                chunk.Refresh(MapRendering.TerrainRefreshType.Features);
+                chunk.Refresh(TerrainRefreshType.Features);
             }
 
             ResetResourceVisibilityCoroutine = null;

@@ -35,8 +35,6 @@ namespace Assets.Simulation.Visibility {
         }
         private CellVisibilityMode _cellVisibilityMode;
 
-        public RevealMode RevealMode { get; set; }
-
         public ResourceVisibilityMode ResourceVisibilityMode {
             get { return _resourceVisibilityMode; }
             set {

@@ -57,14 +57,13 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             Brain.ClearListeners();
             Brain.EnableCameraMovement();
             
+            VisibilityCanon.ResourceVisibilityMode = ResourceVisibilityMode.ActiveCiv;
+            VisibilityCanon.CellVisibilityMode     = CellVisibilityMode.ActiveCiv;
+
+            ExplorationCanon.ExplorationMode = CellExplorationMode.ActiveCiv;
+
             VisibilityResponder.UpdateVisibility = true;
             VisibilityResponder.TryResetCellVisibility();
-
-            VisibilityCanon.ResourceVisibilityMode = ResourceVisibilityMode.ActiveCiv;
-            VisibilityCanon.CellVisibilityMode     = CellVisibilityMode.RevealAll;
-            VisibilityCanon.RevealMode             = RevealMode.Immediate;
-
-            ExplorationCanon.ExplorationMode = CellExplorationMode.AllCellsExplored;
 
             UnitMapIconManager.BuildIcons();
             UnitMapIconManager.SetActive(true);
