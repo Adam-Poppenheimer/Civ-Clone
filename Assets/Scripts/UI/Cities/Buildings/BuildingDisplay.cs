@@ -61,7 +61,7 @@ namespace Assets.UI.Cities.Buildings {
         }
 
         public void OnPointerExit(PointerEventData eventData) {
-            //Tooltip.gameObject.SetActive(false);
+            Tooltip.gameObject.SetActive(false);
         }
 
         #endregion
