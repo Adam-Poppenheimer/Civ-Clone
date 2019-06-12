@@ -73,10 +73,6 @@ namespace Assets.Simulation.MapGeneration {
                     ref cellsAdjacentToNewRiver
                 )) {
                     foreach(var cell in cellsAdjacentToNewRiver) {
-                        if(ModLogic.CanChangeTerrainOfCell(cell, CellTerrain.FloodPlains)) {
-                            ModLogic.ChangeTerrainOfCell(cell, CellTerrain.FloodPlains);
-                        }
-
                         riveredCells.Add(cell);
                         riverStartCandidates.Remove(cell);
 

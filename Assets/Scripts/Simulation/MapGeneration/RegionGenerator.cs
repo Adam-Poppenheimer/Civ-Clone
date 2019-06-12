@@ -23,6 +23,7 @@ namespace Assets.Simulation.MapGeneration {
         private IMapGenerationConfig             Config;
         private ICellClimateLogic                CellClimateLogic;
         private IWeightedRandomSampler<IHexCell> CellRandomSampler;
+        private IRiverCanon                      RiverCanon;
 
         #endregion
 
@@ -30,15 +31,16 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public RegionGenerator(
-            ICellModificationLogic modLogic, IHexGrid grid,
-            IMapGenerationConfig config, ICellClimateLogic cellClimateLogic,
-            IWeightedRandomSampler<IHexCell> cellRandomSampler
+            ICellModificationLogic modLogic, IHexGrid grid, IMapGenerationConfig config,
+            ICellClimateLogic cellClimateLogic, IWeightedRandomSampler<IHexCell> cellRandomSampler,
+            IRiverCanon riverCanon
         ) {
             ModLogic          = modLogic;
             Grid              = grid;
             Config            = config;
             CellClimateLogic  = cellClimateLogic;
             CellRandomSampler = cellRandomSampler;
+            RiverCanon        = riverCanon;
         }
 
         #endregion
@@ -83,10 +85,13 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        public void AssignFloodPlains(IEnumerable<IHexCell> landCells) {
-            foreach(var desertCell in landCells.Where(cell => cell.Terrain == CellTerrain.Desert)) {
-                if(ModLogic.CanChangeTerrainOfCell(desertCell, CellTerrain.FloodPlains)) {
-                    ModLogic.ChangeTerrainOfCell(desertCell, CellTerrain.FloodPlains);
+        public void AssignFloodPlains(IEnumerable<IHexCell> cells) {
+            foreach(var cell in cells) {
+                if( RiverCanon.HasRiver(cell) &&
+                    cell.Terrain == CellTerrain.Desert &&
+                    ModLogic.CanChangeTerrainOfCell(cell, CellTerrain.FloodPlains)
+                ) {
+                    ModLogic.ChangeTerrainOfCell(cell, CellTerrain.FloodPlains);
                 }
             }
         }

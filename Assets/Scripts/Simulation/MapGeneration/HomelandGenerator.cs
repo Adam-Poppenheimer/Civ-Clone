@@ -143,8 +143,6 @@ namespace Assets.Simulation.MapGeneration {
                 RegionGenerator.GenerateTopology(region, regionData.Topology);
                 RegionGenerator.PaintTerrain    (region, regionData.Biome);
 
-                RegionGenerator.AssignFloodPlains(region.LandCells);
-
                 riveredCells += Mathf.CeilToInt(region.LandCells.Count * regionData.Biome.RiverPercentage * 0.01f);
             }
 
@@ -152,6 +150,8 @@ namespace Assets.Simulation.MapGeneration {
             var allWaterCells = regions.SelectMany(region => region.WaterCells);
 
             RiverGenerator.CreateRivers(allLandCells, allWaterCells, riveredCells);
+
+            RegionGenerator.AssignFloodPlains(allLandCells);
 
             foreach(var region in regions) {
                 var regionData = homelandData.GetDataOfRegion(region);

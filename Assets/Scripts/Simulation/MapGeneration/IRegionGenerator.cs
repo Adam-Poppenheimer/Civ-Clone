@@ -12,9 +12,10 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        void GenerateTopology (MapRegion region, IRegionTopologyTemplate template);
-        void PaintTerrain     (MapRegion region, IRegionBiomeTemplate template);
-        void AssignFloodPlains(IEnumerable<IHexCell> landCells);
+        void GenerateTopology(MapRegion region, IRegionTopologyTemplate template);
+        void PaintTerrain    (MapRegion region, IRegionBiomeTemplate template);
+
+        void AssignFloodPlains(IEnumerable<IHexCell> cells);
 
         #endregion
 
