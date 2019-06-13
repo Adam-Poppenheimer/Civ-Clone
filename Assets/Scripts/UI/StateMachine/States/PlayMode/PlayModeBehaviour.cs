@@ -25,7 +25,6 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         private IVisibilityCanon                VisibilityCanon;
         private IExplorationCanon               ExplorationCanon;
         private IGameCore                       GameCore;
-        private ICameraFocuser                  CameraFocuser;
         private IUnitMapIconManager             UnitMapIconManager;
         private List<IPlayModeSensitiveElement> PlayModeSensitiveElements;
 
@@ -37,8 +36,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         public void InjectDependencies(
             UIStateMachineBrain brain, IMapComposer mapComposer, IVisibilityResponder visibilityResponder,
             IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon, IGameCore gameCore,
-            ICameraFocuser cameraFocuser, IUnitMapIconManager unitMapIconManager,
-            List<IPlayModeSensitiveElement> playModeSensitiveElements
+            IUnitMapIconManager unitMapIconManager, List<IPlayModeSensitiveElement> playModeSensitiveElements
         ){
             Brain                     = brain;
             MapComposer               = mapComposer;
@@ -46,7 +44,6 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             VisibilityCanon           = visibilityCanon;
             ExplorationCanon          = explorationCanon;
             GameCore                  = gameCore;
-            CameraFocuser             = cameraFocuser;
             UnitMapIconManager        = unitMapIconManager;
             PlayModeSensitiveElements = playModeSensitiveElements;
         }
@@ -71,8 +68,6 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             foreach(var element in PlayModeSensitiveElements) {
                 element.IsActive = true;
             }
-
-            CameraFocuser.ReturnFocusToPlayer(GameCore.ActivePlayer);
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {

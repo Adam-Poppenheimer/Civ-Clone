@@ -16,6 +16,7 @@ namespace Assets.UI {
         #region instance fields and properties
 
         [SerializeField] private MapGenerationDisplay MapGenerationDisplay = null;
+        [SerializeField] private LoadingScreen        LoadingScreen        = null;
 
         #endregion
 
@@ -24,8 +25,10 @@ namespace Assets.UI {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<ICameraFocuser>      ().To<CameraFocuser>().AsSingle();
-            Container.Bind<MapGenerationDisplay>()                    .FromInstance(MapGenerationDisplay);
+            Container.Bind<MapGenerationDisplay>().FromInstance(MapGenerationDisplay);
+            Container.Bind<LoadingScreen>       ().FromInstance(LoadingScreen);
+
+            Container.Bind<ICameraFocuser>().To<CameraFocuser>().AsSingle();
         }
 
         #endregion

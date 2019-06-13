@@ -42,6 +42,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         private IExplorationCanon                        ExplorationCanon;
         private VisibilitySignals                        VisibilitySignals;
         private IFreeGreatPeopleCanon                    FreeGreatPeopleCanon;
+        private ICameraFocuser                           CameraFocuser;
         private RectTransform                            FreeTechsDisplay;
         private List<RectTransform>                      DefaultPanels;
         private RectTransform                            FreeGreatPeopleNotification;
@@ -56,7 +57,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             IGameCore gameCore, UIStateMachineBrain brain, CitySummaryManager citySummaryManager,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon, ITechCanon techCanon,
             IExplorationCanon explorationCanon, VisibilitySignals visibilitySignals,
-            IFreeGreatPeopleCanon freeGreatPeopleCanon,
+            IFreeGreatPeopleCanon freeGreatPeopleCanon, ICameraFocuser cameraFocuser,
             [Inject(Id = "Free Techs Display")] RectTransform freeTechsDisplay, 
             [Inject(Id = "Play Mode Default Panels")] List<RectTransform> defaultPanels,
             [Inject(Id = "Free Great People Notification")] RectTransform freeGreatPeopleNotification
@@ -71,6 +72,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             ExplorationCanon            = explorationCanon;
             VisibilitySignals           = visibilitySignals;
             FreeGreatPeopleCanon        = freeGreatPeopleCanon;
+            CameraFocuser               = cameraFocuser;
             FreeTechsDisplay            = freeTechsDisplay;
             DefaultPanels               = defaultPanels;
             FreeGreatPeopleNotification = freeGreatPeopleNotification;
@@ -104,6 +106,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             SignalSubscriptions.Add(CoreSignals      .TurnBegan              .Subscribe(OnTurnBegan));
             SignalSubscriptions.Add(VisibilitySignals.CellBecameExploredByCiv.Subscribe(OnCellBecameExploredByCiv));
+
+            CameraFocuser.ReturnFocusToPlayer(GameCore.ActivePlayer);
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
