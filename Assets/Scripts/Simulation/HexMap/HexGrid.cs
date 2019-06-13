@@ -20,12 +20,6 @@ namespace Assets.Simulation.HexMap {
 
     public class HexGrid : MonoBehaviour, IHexGrid {
 
-        #region static fields and properties
-
-        private static Vector3 MapIntersector = new Vector3(0f, 100f, 0f);
-
-        #endregion
-
         #region instance fields and properties
 
         #region from IHexGrid
@@ -66,8 +60,6 @@ namespace Assets.Simulation.HexMap {
 
         private int ChunkCountX;
         private int ChunkCountZ;
-
-        [SerializeField] private LayerMask TerrainCollisionMask = 0;
 
 
 
