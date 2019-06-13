@@ -117,6 +117,8 @@ namespace Assets.Simulation.Core {
         #endregion
 
         private void StartTurn(IPlayer player) {
+            Debug.Log("Starting turn on player " + player.ControlledCiv.Template.Name);
+
             ActivePlayer = player;
 
             player.PassControl(() => EndTurn());

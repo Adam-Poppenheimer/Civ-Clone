@@ -106,8 +106,6 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             SignalSubscriptions.Add(CoreSignals      .TurnBegan              .Subscribe(OnTurnBegan));
             SignalSubscriptions.Add(VisibilitySignals.CellBecameExploredByCiv.Subscribe(OnCellBecameExploredByCiv));
-
-            CameraFocuser.ReturnFocusToPlayer(GameCore.ActivePlayer);
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

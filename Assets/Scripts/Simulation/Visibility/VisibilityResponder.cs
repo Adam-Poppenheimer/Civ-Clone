@@ -25,7 +25,11 @@ namespace Assets.Simulation.Visibility {
 
         #region from IVisibilityResponder
 
-        public bool UpdateVisibility { get; set; }
+        public bool UpdateVisibility {
+            get { return _updateVisibility; }
+            set { _updateVisibility = value; }
+        }
+        private bool _updateVisibility;
 
         #endregion
 

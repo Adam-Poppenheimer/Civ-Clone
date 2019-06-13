@@ -9,6 +9,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.UI.Common;
+using Assets.Simulation.Visibility;
 
 namespace Assets.UI.StateMachine.States {
 
@@ -16,22 +17,28 @@ namespace Assets.UI.StateMachine.States {
 
         #region instance fields and properties
 
-        private UIStateMachineBrain Brain;
-        private LoadingScreen       LoadingScreen;
+        private UIStateMachineBrain  Brain;
+        private LoadingScreen        LoadingScreen;
+        private IVisibilityResponder VisibilityResponder;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(UIStateMachineBrain brain, LoadingScreen loadingScreen) {
-            Brain         = brain;
-            LoadingScreen = loadingScreen;
+        public void InjectDependencies(
+            UIStateMachineBrain brain, LoadingScreen loadingScreen, IVisibilityResponder visibilityResponder
+        ) {
+            Brain               = brain;
+            LoadingScreen       = loadingScreen;
+            VisibilityResponder = visibilityResponder;
         }
 
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+            VisibilityResponder.UpdateVisibility = false;
+
             LoadingScreen.gameObject.SetActive(true);
 
             Brain.ClearListeners();
@@ -41,6 +48,8 @@ namespace Assets.UI.StateMachine.States {
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             LoadingScreen.gameObject.SetActive(false);
+
+            VisibilityResponder.UpdateVisibility = true;
         }
 
         #endregion
