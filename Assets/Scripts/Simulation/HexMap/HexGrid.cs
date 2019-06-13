@@ -279,25 +279,35 @@ namespace Assets.Simulation.HexMap {
         }
 
         public Vector3 PerformIntersectionWithTerrainSurface(Vector3 xzPosition) {
-            RaycastHit results;
+            Vector3 hitpoint;
 
-            if(!Physics.Raycast(xzPosition + MapIntersector, Vector3.down * 50, out results, Mathf.Infinity, layerMask: TerrainCollisionMask)) {
+            if(!TryPerformIntersectionWithTerrainSurface(xzPosition, out hitpoint)) {
                 Debug.LogError("PerformIntersectionWithTerrainSurface failed to find a collision for xzPosition " + xzPosition.ToString());
             }
 
-            return results.point;
+            return hitpoint;
         }
 
         public bool TryPerformIntersectionWithTerrainSurface(Vector3 xzPosition, out Vector3 hitpoint) {
-            RaycastHit results;
-
-            if(Physics.Raycast(xzPosition + MapIntersector, Vector3.down * 50, out results, Mathf.Infinity, layerMask: TerrainCollisionMask)) {
-                hitpoint = results.point;
-                return true;
-            }else {
+            if(!HasCellAtLocation(xzPosition)) {
                 hitpoint = Vector3.zero;
                 return false;
             }
+
+            var cellAtLocation = GetCellAtLocation(xzPosition);
+
+            foreach(var chunk in cellAtLocation.OverlappingChunks) {
+                if(chunk.IsInTerrainBounds2D(xzPosition.ToXZ())) {
+                    hitpoint = new Vector3(
+                        xzPosition.x, chunk.Terrain.SampleHeight(xzPosition), xzPosition.z
+                    );
+
+                    return true;
+                }
+            }
+
+            hitpoint = Vector3.zero;
+            return false;
         }
 
         public Vector3 GetAbsolutePositionFromRelative(Vector3 relativePosition) {

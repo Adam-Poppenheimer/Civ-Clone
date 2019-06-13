@@ -368,6 +368,14 @@ namespace Assets.Simulation.Units {
             }
         }
 
+        public void RefreshPosition() {
+            var occupiedCell = PositionCanon.GetOwnerOfPossession(this);
+
+            if(occupiedCell != null) {
+                transform.position = Grid.PerformIntersectionWithTerrainSurface(occupiedCell.AbsolutePosition);
+            }
+        }
+
         public void Destroy() {
             if(Application.isPlaying) {
                 Destroy(gameObject);
@@ -384,13 +392,18 @@ namespace Assets.Simulation.Units {
             IHexCell startingCell = PositionCanon.GetOwnerOfPossession(this);
             IHexCell currentCell = startingCell;
 
-            Vector3 a, b, c = currentCell.AbsolutePosition;
+            Vector3 currentLocation = Grid.PerformIntersectionWithTerrainSurface(currentCell.AbsolutePosition);
+
+            Vector3 a, b, c = currentLocation;
             yield return LookAt(CurrentPath.First().AbsolutePosition);
 
             float t = Time.deltaTime * Config.TravelSpeedPerSecond;
 
             while((ignoreMoveCosts || CurrentMovement > 0) && CurrentPath != null && CurrentPath.Count > 0) {
                 var nextCell = CurrentPath.FirstOrDefault();
+
+                Vector3 nextLocation = Grid.PerformIntersectionWithTerrainSurface(nextCell.AbsolutePosition);
+
                 if(!PositionCanon.CanChangeOwnerOfPossession(this, nextCell) || nextCell == null) {
                     CurrentPath.Clear();
                     break;
@@ -407,8 +420,8 @@ namespace Assets.Simulation.Units {
                 CurrentPath.RemoveAt(0);
 
                 a = c;
-                b = currentCell.AbsolutePosition;
-                c = (b + nextCell.AbsolutePosition) * 0.5f;
+                b = currentLocation;
+                c = (b + nextLocation) * 0.5f;
 
                 for(; t < 1f; t += Time.deltaTime * Config.TravelSpeedPerSecond) {
                     transform.position = BezierQuadratic.GetPoint(a, b, c, t);
@@ -420,11 +433,13 @@ namespace Assets.Simulation.Units {
                 t -= 1f;
 
                 currentCell = nextCell;
+
+                currentLocation = Grid.PerformIntersectionWithTerrainSurface(currentCell.AbsolutePosition);
             }
 
             if(currentCell != startingCell) {
                 a = c;
-                b = currentCell.AbsolutePosition;
+                b = currentLocation;
                 c = b;
 
                 for(; t < 1f; t += Time.deltaTime * Config.TravelSpeedPerSecond) {

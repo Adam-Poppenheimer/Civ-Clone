@@ -346,7 +346,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TerrainCollisionMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 1573136
 --- !u!4 &3764551
 Transform:
   m_ObjectHideFlags: 0

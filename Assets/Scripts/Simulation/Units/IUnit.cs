@@ -81,6 +81,8 @@ namespace Assets.Simulation.Units {
         void BeginIdling();
         void BeginFortifying();
 
+        void RefreshPosition();
+
         void Destroy();
 
         #endregion

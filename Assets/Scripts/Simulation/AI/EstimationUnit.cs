@@ -178,6 +178,10 @@ namespace Assets.Simulation.AI {
             throw new NotImplementedException(EstimationErrorMessage);
         }
 
+        public void RefreshPosition() {
+            throw new NotImplementedException(EstimationErrorMessage);
+        }
+
         #endregion
 
         #endregion
