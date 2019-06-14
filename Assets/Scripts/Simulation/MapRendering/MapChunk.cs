@@ -373,6 +373,12 @@ namespace Assets.Simulation.MapRendering {
 
             if(flushTerrain) {
                 Terrain.Flush();
+
+                if(Terrain.topNeighbor    != null) { Terrain.topNeighbor   .Flush(); }
+                if(Terrain.rightNeighbor  != null) { Terrain.rightNeighbor .Flush(); }
+                if(Terrain.bottomNeighbor != null) { Terrain.bottomNeighbor.Flush(); }
+                if(Terrain.leftNeighbor   != null) { Terrain.leftNeighbor  .Flush(); }
+
                 yield return SkipFrame;
             }
 
