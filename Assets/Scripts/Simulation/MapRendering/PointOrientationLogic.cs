@@ -87,7 +87,9 @@ namespace Assets.Simulation.MapRendering {
                 dataToUse.RightWeight     = weightsColor.b;
                 dataToUse.NextRightWeight = weightsColor.a;
 
-                dataToUse.RiverWeight = Mathf.Clamp01(1f - weightsColor.r - weightsColor.g - weightsColor.b - weightsColor.a);
+                float weightSum = weightsColor.r + weightsColor.g + weightsColor.b + weightsColor.a;
+
+                dataToUse.RiverWeight = Mathf.Clamp01(1f - weightSum);
 
                 dataToUse.ElevationDuck = duckColor.r;
 

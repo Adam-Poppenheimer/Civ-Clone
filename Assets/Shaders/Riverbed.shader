@@ -1,6 +1,6 @@
 ﻿Shader "Civ Clone/Riverbed" {
 	Properties {
-		_MainTex("Albedo (RGB)", 2D) = "white" {}
+		_MainTex("Albedo (RGB)", 2D) = "black" {}
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" "Queue"="Transparent+4" }
@@ -13,7 +13,7 @@
 			Pass IncrSat
 		}
 
-		Blend OneMinusDstAlpha DstAlpha
+		Blend SrcAlpha OneMinusSrcAlpha
 
 		CGPROGRAM
 		#pragma surface surf Standard keepalpha
@@ -31,7 +31,7 @@
 			fixed4 mainColor = tex2D(_MainTex, IN.worldPos.xz * 0.025);
 
 			o.Albedo = mainColor.rgb;
-			o.Alpha = mainColor.a;
+			o.Alpha = 1.0;
 		}
 		ENDCG
 	}

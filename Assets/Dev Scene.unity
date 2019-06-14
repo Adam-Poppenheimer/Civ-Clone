@@ -344,9 +344,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef3e14ad4149ced4db3bc876c9487ad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TerrainCollisionMask:
-    serializedVersion: 2
-    m_Bits: 1573136
 --- !u!4 &3764551
 Transform:
   m_ObjectHideFlags: 0
@@ -58301,7 +58298,7 @@ MonoBehaviour:
     m_Bits: 1048592
   LandDrawingMask:
     serializedVersion: 2
-    m_Bits: 31744
+    m_Bits: 162816
   WaterDrawingMask:
     serializedVersion: 2
     m_Bits: 1024

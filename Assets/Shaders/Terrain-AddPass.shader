@@ -82,17 +82,12 @@ Shader "Hidden/TerrainEngine/Splatmap/Terrain-AddPass" {
 			half4 defaultSmoothness = half4(_Smoothness0, _Smoothness1, _Smoothness2, _Smoothness3);
 
 			#ifdef DONT_USE_TERRAIN_NORMAL_MAP
-				o.Normal = fixed3(0, 0, 1);
+			o.Normal = fixed3(0, 0, 1);
 			#endif
 
 			float3 normal = o.Normal;
 
 			SplatmapMix(IN, defaultSmoothness, splat_control, weight, mixedDiffuse, normal);
-
-			float2 posInCameraXZ = IN.worldPos.xz - _BakeTextureDimensions.xy;
-			float2 bakeUV = float2(posInCameraXZ.x / _BakeTextureDimensions.z, posInCameraXZ.y / _BakeTextureDimensions.w);
-
-			fixed4 bakedDiffuse = tex2D(_BakeTexture, bakeUV).rgba;
 
 			float4 cellData = GetCellDataFromWorld(IN.worldPos);
 
@@ -103,10 +98,7 @@ Shader "Hidden/TerrainEngine/Splatmap/Terrain-AddPass" {
 
 			float cellDataFactor = lerp(0.25, 1, visibility) * explored;
 
-			fixed3 splatAlbedo = mixedDiffuse.rgb * cellDataFactor;
-			fixed3 bakedAlbedo = bakedDiffuse.rgb * cellDataFactor;
-
-			o.Albedo = lerp(splatAlbedo, bakedAlbedo, bakedDiffuse.a);
+			o.Albedo = mixedDiffuse.rgb * cellDataFactor;
 			o.Alpha = weight;
 			o.Smoothness = mixedDiffuse.a;
 			o.Specular = splat_control.x * _Specular0 + splat_control.y * _Specular1 + splat_control.z * _Specular2 + splat_control.a * _Specular3;
